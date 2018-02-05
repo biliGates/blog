@@ -1,0 +1,175 @@
+<style lang="stylus" scoped>
+  .song-list
+    margin-bottom 34px
+    border-bottom 1px solid rgba(7, 17, 27, 0.1)
+    .song-list-header, .song
+      display flex
+      height 34px
+      width 100%
+      line-height 34px
+      .count
+        flex 0 0 40px
+      .song-name
+        flex 2
+      .singer
+        flex 2
+      .album-name
+        flex 2
+      .operation, .player-all
+        flex 0 100px
+
+
+    .song-list-header
+      background rgba(200, 200, 200, 0.1)
+      border-bottom 1px solid rgba(7, 17, 27, 0.1)
+      .song-name, .singer, .album-name, .player-all
+        border-left 1px solid rgba(7, 17, 27, 0.1)
+        box-sizing border-box
+        font-weight 700
+        padding-left 5px
+        color #555
+        transition all .4s
+        &:hover
+          background #d1d1d1
+        &:active
+          box-shadow 0 0 4px rgba(7, 17, 27, 0.1)
+      .player-all
+        i
+          font-size 12px
+          margin-left 4px
+
+    .song
+      transition all .2s
+      &:nth-child(odd)
+        background rgba(200, 200, 200, 0.1)
+      &:hover
+        background #d1d1d1
+        .operation
+          i
+            color #eee
+      .count
+        &.playing
+          .sort-num
+            display none  
+          .icon
+            margin 6px 0 0 6px  
+            display block
+            height 15px 
+            width 15px
+            background url("./player.gif") no-repeat 0 0 / 15px 15px
+          
+        .sort-num
+          font-size 14px
+          margin-left 6px
+          color #888
+      .song-name, .singer, .album-name
+        overflow hidden
+        white-space nowrap
+        text-overflow ellipsis
+        padding-left 5px
+      .operation
+        padding-left 20px
+        box-sizing border-box
+        i 
+          width 20px
+          display inline-block
+          color #ccc
+          text-shadow 0 0 2px rgba(7, 17, 27, 0.1)
+          transition all .3s
+          padding 5px 3px
+          text-align center
+          &.icon-pause-
+            font-size 18px
+            &:before
+              font-weight 700
+              color #ccc
+          &.icon-play
+            font-size 18px
+            &:hover
+              color #444
+          &:hover
+            color rgb(220, 45, 45)
+</style>
+<style lang="stylus">
+em
+  font-style normal
+  color rgb(200, 20, 20)
+  font-weight 600
+</style>
+
+<template>
+  <div class="song-list">
+    <!-- 表格头 -->
+    <div class="song-list-header">
+      <span class="count"></span>
+      <div class="song-name">歌曲名</div>
+      <div class="singer">歌手</div>
+      <div class="album-name">专辑</div>
+      <div class="player-all">全部播放<i class="icon-list"></i></div>
+    </div>
+    <!-- 歌曲部分 -->
+    <div class="song"v-for="(song, index) in songList">
+      <!-- 序号 -->
+      <div class="count" :class="{'playing': playSong === index && play}">
+        <div class="sort-num">{{_toTwo(index)}}</div>
+        <i class="icon"></i>
+      </div>
+      <!-- 歌曲、歌手、专辑名 -->
+      <div class="song-name" v-html="song.title"></div>
+      <div class="singer" v-html="song.author"></div>
+      <div class="album-name" v-html="song.album_title"></div>
+      <!-- 操作按纽 -->
+      <div class="operation">
+        <i @click="playing(song, index)" 
+           :class="playSong === index && play ? 'icon-pause-' : 'icon-play'"
+        ></i>
+        <i class="icon-star" @click="favorite(song, index)"></i>
+      </div>
+
+    </div>  
+
+  </div>
+</template>
+
+<script>
+  import {toTwo} from '@/common/js/utils'
+  export default {
+    data () {
+      return {
+        playSong: false,
+        play: false
+      }
+    },
+    props: {
+      songList: {
+        type: Array,
+        require: true
+      }
+    },
+    created () {
+      console.log(this.songList)
+    },
+    methods: {
+      playing (song, index) {
+        this.playSong = index
+        this.$store.commit('PLAY_SONG', song)
+        if (!this.play) {
+          this.$store.commit('TOGGLE_PLAY', true)
+          console.log(this.$store.state.togglePlay)
+        } else {
+          this.$store.commit('TOGGLE_PLAY')
+          console.log(1)
+          console.log(this.$store.state.togglePlay)
+        }
+        this.play = !this.play
+      },
+      favorite (song, index) {
+      },
+      _toTwo (num) {
+        return toTwo(num)
+      }
+    },
+    components: {
+    }
+  }
+</script>
