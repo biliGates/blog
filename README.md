@@ -1,7 +1,5 @@
 # p-music
 
-> this is a simple music app
-
 #### Build Setup
 
 ``` bash

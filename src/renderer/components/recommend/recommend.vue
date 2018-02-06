@@ -16,7 +16,7 @@
           div
             text-align center
             color #888
-            font-weight 700
+            font-family "黑体"
             width 100px
             transition color .3s
             margin 0 auto
@@ -32,7 +32,8 @@
                 bottom 0
                 left 30px
                 right 30px
-                border-bottom 2px solid #f14545
+                border-bottom 1px solid #f14545
+                transform scaleY(2)
     .content
       position absolute
       top 70px

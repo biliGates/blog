@@ -56,21 +56,24 @@
       .music-list
         position relative
         margin-left 6px
+        width 80px
+        .icon-list-
+          position relative
+          z-index -1
         .music-amount
           position absolute
+          text-align center
           top 17px
           left 17px
           width 26px
-          padding-left 5px
+          padding-right 5px
           line-height 16px
           font-size 11px
+          z-index -1
           border-radius 0 8px 8px 0
           background rgba(7, 17, 27, 0.2)
           box-shadow 0 0 4px rgba(7, 17, 27, 0.1)
           color #444
-        &:hover
-          text-shadow 2px 2px 2px rgba(7, 17, 27, 0.1)
-          color #000
 </style>
 
 <template>
@@ -112,9 +115,10 @@
 
     <div class="other-control">
       <div class="play-mode"><i class="icon-single-m-"></i></div>
-      <div class="music-list">
+      <div class="music-list" ref="musicList" @click.stop.self="togglePlayerList">
         <i class="icon-list-"></i>
-        <div class="music-amount">100</div>
+        <div class="music-amount">{{$songAmount}}</div>
+        <player-list @close="showPlayerList = false" class="test" v-show="showPlayerList"></player-list>
       </div>
     </div>
 
@@ -124,6 +128,7 @@
 <script>
   import ProgressBar from '@/base/progress-bar/progress-bar'
   import MiniPlayer from '@/components/mini-player/mini-player'
+  import PlayerList from '@/components/player-list/player-list'
   import {getSong, getLrc} from '@/api/song'
   import {ERR_OK} from '@/api/config'
   import {getTime} from '@/common/js/utils'
@@ -134,6 +139,7 @@
         progressBarTo: 0,
         vol: 0,
         song: this.$store.state.playSong,
+        showPlayerList: false,
         songList: null,
         songUrl: null,
         songLrc: null,
@@ -141,6 +147,10 @@
         playTime: '00:00',
         allTime: '00:00'
       }
+    },
+    created () {
+      // 外部点击时隐藏播放列表
+      document.addEventListener('click', this.hidePlayerList, false)
     },
     mounted () {
       this.$nextTick(() => {
@@ -201,6 +211,14 @@
         this.vol = movePercentage
         this.volume()
       },
+      // 外部点击时隐藏方法
+      hidePlayerList (e) {
+        this.showPlayerList = this.$refs.musicList.contains(e.target)
+      },
+      // icon 点击时切换列表状态
+      togglePlayerList () {
+        this.showPlayerList = !this.showPlayerList
+      },
       _togglePlay () {
         this.$store.commit('TOGGLE_PLAY')
       },
@@ -231,7 +249,8 @@
     },
     components: {
       ProgressBar,
-      MiniPlayer
+      MiniPlayer,
+      PlayerList
     },
     computed: {
       // 根据音量调整图标
@@ -243,6 +262,9 @@
           'icon-volume-medium': vol <= 70 && vol > 30,
           'icon-volume-high': vol <= 100 && vol > 70
         }
+      },
+      $songAmount () {
+        return (this.$store.state.playerList && this.$store.state.playerList.length) || 0
       },
       // 利用 计算属性 watch 到store里的数据
       $storeSong () {

@@ -1,15 +1,14 @@
 <style lang="stylus" scoped>
-  @import "../../common/stylus/variable.styl"
   .content
     position absolute
     display flex
     width 100%
     top 50px
     bottom 50px
-    border-bottom 1px solid $border-color
+    border-bottom 1px solid rgba(7, 17, 27, 0.1)
     .menu
       flex 0 0 200px
-      border-right 1px solid $border-color
+      border-right 1px solid rgba(7, 17, 27, 0.1)
       position relative
       height 100%
       font-family "黑体"
@@ -23,9 +22,9 @@
           color #89898a
         .list-item
           line-height 34px
-          font-size $font-size-s
+          font-size 14px
           color #777
-          font-weight 500
+          font-weight 700
           transition color .1s
           i
             margin-right 4px
@@ -45,7 +44,7 @@
               content: ''
               height 34px
               left 0
-              border-left 2px solid $bgColor-darkred
+              border-left 2px solid rgb(220, 45, 45)
     .router 
       flex 1
       position relative

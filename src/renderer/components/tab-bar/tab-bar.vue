@@ -1,12 +1,11 @@
 <style lang="stylus" scoped>
-  @import "../../common/stylus/variable.styl"
   .tab-bar
     -webkit-app-region drag
     -webkit-user-select: none
     display flex
     width 100%
     height 50px
-    background-color $bgColor-red
+    background-color rgb(220, 45, 45)
     .logo
       flex 1
       width 150px
@@ -17,36 +16,36 @@
         vertical-align top
         display inline-block
         line-height 50px
-        font-size $logo-size
+        font-size 20px
         transition all .7s
         &:hover
           transform rotate(360deg)
       .title
         display inline-block
         vertical-align top
-        font-size $font-size-m
+        font-size 18px
         font-weight 600
-        color $color-white-a
+        color #f1f1f1
     .search
       flex 4
       .search-input
         position relative
         .icon-search, .input
-          background $bgColor-darkred
-          border 1px solid $border-color
+          background rgb(230, 60, 60)
+          border 1px solid rgba(7, 17, 27, 0.1)
           line-height 25px
         .icon-search
           -webkit-app-region no-drag
           position absolute
           width 34px
           left 186px
-          top 13px
+          top 12px
           border-radius 0 15px 15px 0
           font-size 14px
           text-align center
           color #d9d9d9
           &:hover
-            box-shadow 0 0 5px $border-color
+            box-shadow 0 0 5px rgba(7, 17, 27, 0.1)
             color #f1f1f1
             background-color rgb(210, 50, 50)
         .input
@@ -56,13 +55,13 @@
           margin-top 12px
           border-radius 15px 0 0 15px
           outline none
-          font-size $font-size-s
-          color $color-white-a
+          font-size 13px
+          color #e9e9e9
           &::placeholder
-            color $color-white-b
+            color #d1d1d1
           &:hover
             &::placeholder
-              color $color-white-a
+              color #e9e9e9
       .search-suggest
         padding 10px 0
         width 220px
@@ -139,7 +138,7 @@
         float left
         width 50px
         margin-left 10px
-        font-size $logo-size
+        font-size 18px
         i
           -webkit-app-region no-drag
           display inline-block

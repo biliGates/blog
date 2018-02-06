@@ -12,7 +12,7 @@
     .scroll
       position absolute
       width 100%
-      transition all .1s
+      transition all .2s
       top 0
     .scroll-bar
       position absolute

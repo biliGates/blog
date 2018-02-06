@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 
 import '../renderer/common/stylus/icon.styl'
-import '../renderer/common/stylus/index.styl'
+import '../renderer/common/stylus/reset.styl'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios

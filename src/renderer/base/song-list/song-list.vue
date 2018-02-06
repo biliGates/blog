@@ -27,7 +27,7 @@
         box-sizing border-box
         font-weight 700
         padding-left 5px
-        color #555
+        color #777
         transition all .4s
         &:hover
           background #d1d1d1
@@ -40,6 +40,7 @@
 
     .song
       transition all .2s
+      color #888
       &:nth-child(odd)
         background rgba(200, 200, 200, 0.1)
       &:hover
@@ -62,11 +63,39 @@
           font-size 14px
           margin-left 6px
           color #888
-      .song-name, .singer, .album-name
+      .singer, .album-name
         overflow hidden
         white-space nowrap
         text-overflow ellipsis
         padding-left 5px
+        font-size 13px
+        font-weight 600
+      .song-name
+        display flex
+        padding-left 5px
+        font-size 13px
+        font-weight 600
+        width 100%
+        overflow hidden
+        .name
+          font-weight 600
+          max-width 70%
+          margin-right 4px
+          overflow hidden
+          white-space nowrap
+          text-overflow ellipsis
+        .icon
+          margin 12px 2px
+          line-height 6px
+          height 6px
+          padding 1px
+          text-align center
+          color rgb(220, 45, 45)
+          font-size 8px
+          font-family Arial
+          border 1px solid rgb(220, 45, 45)
+          text-shadow 0 0 1px rgba(220, 45, 45, 0.5) 
+          box-shadow 0 0 1px rgba(220, 45, 45, 0.7)
       .operation
         padding-left 20px
         box-sizing border-box
@@ -105,7 +134,7 @@ em
       <div class="song-name">歌曲名</div>
       <div class="singer">歌手</div>
       <div class="album-name">专辑</div>
-      <div class="player-all">全部播放<i class="icon-list"></i></div>
+      <div class="player-all" @click="playerAll">全部播放<i class="icon-list"></i></div>
     </div>
     <!-- 歌曲部分 -->
     <div class="song"v-for="(song, index) in songList">
@@ -115,7 +144,10 @@ em
         <i class="icon"></i>
       </div>
       <!-- 歌曲、歌手、专辑名 -->
-      <div class="song-name" v-html="song.title"></div>
+      <div class="song-name">
+        <div class="name" v-html="song.title"></div>
+        <div class="icon" v-for="icon in _icons(song.biaoshi)">{{icon}}</div>
+      </div>
       <div class="singer" v-html="song.author"></div>
       <div class="album-name" v-html="song.album_title"></div>
       <!-- 操作按纽 -->
@@ -132,7 +164,7 @@ em
 </template>
 
 <script>
-  import {toTwo} from '@/common/js/utils'
+  import {toTwo, icons} from '@/common/js/utils'
   export default {
     data () {
       return {
@@ -150,6 +182,9 @@ em
       console.log(this.songList)
     },
     methods: {
+      playerAll () {
+        this.$store.commit('PLAYER_LIST', this.songList)
+      },
       playing (song, index) {
         this.playSong = index
         this.$store.commit('PLAY_SONG', song)
@@ -164,6 +199,10 @@ em
         this.play = !this.play
       },
       favorite (song, index) {
+      },
+      _icons (text) {
+        console.log(text)
+        return icons(text)
       },
       _toTwo (num) {
         return toTwo(num)

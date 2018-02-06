@@ -19,7 +19,7 @@
     &.player-leave-active
       transition transform .4s, opacity .4s
     &.player-enter-active
-      transition transform .8s, opacity .4s
+      transition transform .6s, opacity .4s
     &.player-leave-to, &.player-enter
       transform scale(0)
       opacity 0
@@ -155,7 +155,7 @@
 
 <template>
    <transition name="player">
-    <div v-show="$store.state.showPlayer" class="player">
+    <div v-if="$store.state.showPlayer" class="player">
       <!-- 背景 -->
       <div class="blur-bg" 
            :style="{'backgroundImage': `linear-gradient(to bottom,rgba(0,0,0,0),rgba(255, 255, 255, 0.5)),url(${songInfo.album_500_500 || songInfo.pic_big})`}"

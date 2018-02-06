@@ -7,6 +7,7 @@
   left 0
   overflow hidden
   cursor default
+  font-family Trebuchet MS, Helvetica, sans-serif, "宋体", "黑体", "微软雅黑"
   .player-control
     position fixed
     bottom 0

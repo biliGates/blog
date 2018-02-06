@@ -1,5 +1,5 @@
 const state = {
-  playSongList: null,
+  playerList: null,
   playSong: null,
   playSongPrev: null,
   playSongNext: null,

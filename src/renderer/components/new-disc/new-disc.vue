@@ -28,8 +28,8 @@
               border 1px solid rgba(120, 130, 140, 0.1)
               transition all .3s
               &:hover
-                box-shadow 2px 2px 4px rgba(50, 60, 70, 0.1)
-                transform translate(-1px, -1px)
+                box-shadow 2px 2px 10px rgba(50, 60, 70, 0.1)
+                transform  translateZ(0) scale(1.0, 1.0)
               &:active
                 transition box-shadow .2s
                 box-shadow 0 0 6px rgba(50, 60, 70, 0.1)

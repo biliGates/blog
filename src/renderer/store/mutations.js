@@ -16,8 +16,8 @@ const mutations = {
     state.playSongNext = song
   },
   // 播放列表
-  [types.PLAY_SONG_LIST] (state, songs) {
-    state.playSongList = songs
+  [types.PLAYER_LIST] (state, songs) {
+    state.playerList = songs
   },
   // 播放器 显示隐藏状态
   [types.SHOW_PLAYER] (state) {

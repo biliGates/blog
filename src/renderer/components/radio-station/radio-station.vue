@@ -85,7 +85,10 @@
       },
       _getChannelSong (data) {
         getChannelSong(SONGS_AMOUNT, data).then((res) => {
-          this.$store.state.commit('PLAY_SONG_LIST', res)
+          if (res.error_code === ERR_OK) {
+            console.log(res.result.songlist)
+            this.$store.commit('PLAYER_LIST', res.result.songlist)
+          }
         })
       }
     },

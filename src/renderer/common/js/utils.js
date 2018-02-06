@@ -33,3 +33,10 @@ export const getTime = (time) => {
   let sec = Math.round(time - (min * 60))
   return `${toTwo(min)}:${toTwo(sec)}`
 }
+
+export const icons = (icon) => {
+  let i = []
+  new RegExp('lossless').test(icon) && i.push('SQ')
+  new RegExp('vip').test(icon) && i.push('VIP')
+  return i
+}

@@ -44,6 +44,8 @@
                 border-radius 50%
           .name
             font-size 14px
+            color #888
+            font-weight 600
             text-align center
             margin-top 10px
 </style>

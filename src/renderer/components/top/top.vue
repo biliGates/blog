@@ -15,7 +15,7 @@
           overflow hidden
           transition all .3s
           &:hover
-            transform translate(-1px, -1px)
+            transform translateZ(0) scale(1.0, 1.0)
             box-shadow 5px 5px 5px rgba(7, 17, 27, 0.1)
           .header
             overflow hidden
@@ -49,15 +49,15 @@
                     overflow hidden
                     white-space nowrap
                     text-overflow ellipsis
-                    color #909090
+                    color #999
+                    font-weight 600
                   .song-name
                     width 70%
-                    font-size 14px
+                    font-size 12px
                     line-height 20px
-                    font-weight 600
                   .singer
                     width 30%
-                    font-size 12px
+                    font-size 10px
                     line-height 20px
                     text-align right
             .more
@@ -66,6 +66,7 @@
               background rgba(180, 190, 200, 0.1)
               line-height 30px
               color #888
+              transition color .3s
               .right-icon
                 display inline-block
                 vertical-align top

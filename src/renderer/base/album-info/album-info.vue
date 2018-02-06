@@ -38,7 +38,6 @@
                 padding 2px 3px
                 font-size 14px
                 font-weight 600
-
             .author, .publish-time, .listen-num, .publish-company, .language
               height 26px
               span
@@ -52,7 +51,7 @@
                 color #f1f1f1
                 background rgb(220, 45, 45)
               .text
-                width 400px
+                max-width 400px
                 line-height 16px
                 font-size 13px
                 overflow hidden
