@@ -137,7 +137,7 @@ em
       <div class="player-all" @click="playerAll">全部播放<i class="icon-list"></i></div>
     </div>
     <!-- 歌曲部分 -->
-    <div class="song"v-for="(song, index) in songList">
+    <div class="song"v-for="(song, index) in songList" @click="playing(song)">
       <!-- 序号 -->
       <div class="count" :class="{'playing': playSong === index && play}">
         <div class="sort-num">{{_toTwo(index)}}</div>
@@ -152,8 +152,7 @@ em
       <div class="album-name" v-html="song.album_title"></div>
       <!-- 操作按纽 -->
       <div class="operation">
-        <i @click="playing(song, index)" 
-           :class="playSong === index && play ? 'icon-pause-' : 'icon-play'"
+        <i :class="playSong === index && play ? 'icon-pause-' : 'icon-play'"
         ></i>
         <i class="icon-star" @click="favorite(song, index)"></i>
       </div>
@@ -165,6 +164,8 @@ em
 
 <script>
   import {toTwo, icons} from '@/common/js/utils'
+  import {mapActions, mapMutations} from 'vuex'
+
   export default {
     data () {
       return {
@@ -179,36 +180,32 @@ em
       }
     },
     created () {
-      console.log(this.songList)
     },
     methods: {
       playerAll () {
-        this.$store.commit('PLAYER_LIST', this.songList)
+        this.setSongList(this.songList)
       },
-      playing (song, index) {
-        this.playSong = index
-        this.$store.commit('PLAY_SONG', song)
-        if (!this.play) {
-          this.$store.commit('TOGGLE_PLAY', true)
-          console.log(this.$store.state.togglePlay)
-        } else {
-          this.$store.commit('TOGGLE_PLAY')
-          console.log(1)
-          console.log(this.$store.state.togglePlay)
-        }
-        this.play = !this.play
+      playing (song) {
+        this.playingSong(song)
+        this.PLAYING(true)
       },
       favorite (song, index) {
       },
       _icons (text) {
-        console.log(text)
         return icons(text)
       },
       _toTwo (num) {
         return toTwo(num)
-      }
+      },
+      ...mapActions({
+        playingSong: 'playingSong',
+        setSongList: 'songList'
+      }),
+      ...mapMutations([
+        'PLAYING'
+      ])
     },
-    components: {
+    computed: {
     }
   }
 </script>

@@ -74,6 +74,8 @@
 
 <script>
   import Player from '@/components/player/player'
+  import {mapMutations} from 'vuex'
+
   export default {
     props: {
       songInfo: {
@@ -91,8 +93,11 @@
     methods: {
       // 控制播放器显示隐藏
       _showPlayer () {
-        this.$store.commit('SHOW_PLAYER')
-      }
+        this.TOGGLE_PLAYER()
+      },
+      ...mapMutations([
+        'TOGGLE_PLAYER'
+      ])
     },
     components: {
       Player

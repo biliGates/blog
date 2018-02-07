@@ -1,3 +1,20 @@
+<style lang="stylus">
+  .player
+      em 
+        font-weight normal
+    .song-name
+      em
+        color #444
+        font-weight 700
+    .singer
+      em
+        color #777
+    .album
+      em
+        color #555
+</style>
+
+
 <style lang="stylus" scoped>
 
   @keyframes rotation
@@ -123,14 +140,13 @@
               .text
                 color #555
           .lrcs, .no-lrc
-            margin-top 60px
+            margin-top 40px
             width 460px
             height 316px
             border-right 1px solid rgba(7, 17, 27, .1)
             color #333
           .lrcs
             height 330px
-            margin-top 60px
             width 460px
             .lrcs-wrapper
               font-size 0
@@ -155,7 +171,7 @@
 
 <template>
    <transition name="player">
-    <div v-if="$store.state.showPlayer" class="player">
+    <div v-if="showPlayer" class="player">
       <!-- 背景 -->
       <div class="blur-bg" 
            :style="{'backgroundImage': `linear-gradient(to bottom,rgba(0,0,0,0),rgba(255, 255, 255, 0.5)),url(${songInfo.album_500_500 || songInfo.pic_big})`}"
@@ -194,7 +210,7 @@
             <div class="song-name">
               <h2 class="text">{{songInfo.title}}</h2>
             </div>
-            <div class="singer-info">
+            <div class="singer-info player-">
               <div class="singer">
                 <span class="title">歌手：</span><span class="text">{{songInfo.author}}</span>
               </div>
@@ -236,6 +252,8 @@
   import CloseButton from '@/base/close-button/close-button'
   import Scroll from '@/base/scroll/scroll'
   import lrc from '@/common/js/lrc'
+  import {mapGetters, mapMutations} from 'vuex'
+
   export default {
     data () {
       return {
@@ -255,8 +273,6 @@
       timer: {
         type: Number
       }
-    },
-    created () {
     },
     updated () {
       this.$refs.scroll && this.$refs.scroll.refresh()
@@ -295,12 +311,21 @@
       },
       // 隐藏播放器
       _hidePlayer () {
-        this.$store.commit('SHOW_PLAYER')
+        this.TOGGLE_PLAYER()
       },
       // 解析歌词
       _lrc () {
         this.lrc = this.songLrc.lrcContent ? lrc(this.songLrc.lrcContent) : null
-      }
+      },
+      ...mapMutations([
+        'TOGGLE_PLAYER',
+        'PLAYING'
+      ])
+    },
+    computed: {
+      ...mapGetters([
+        'showPlayer'
+      ])
     },
     watch: {
       songLrc () {

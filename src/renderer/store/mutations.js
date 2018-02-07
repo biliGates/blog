@@ -1,34 +1,29 @@
 import * as types from './mutation-type'
+import {PLAY_MODE, SONG_LIST_MODE} from '@/common/js/vuex.config.js'
 
 const mutations = {
-  // 当前播放音乐
-  [types.PLAY_SONG] (state, song) {
-    if (state.playSong !== null && state.playSong.song_id !== song.song_id) {
-      state.playSong = song
-    } else if (state.playSong === null) {
-      state.playSong = song
-    }
+  [types.SET_SONG_LIST] (state, list) {
+    state.songList = list
   },
-  [types.PLAY_SONG_PREV] (state, song) {
-    state.playSongPrev = song
+  [types.SET_SONG_LIST_MODE] (state) {
+    state.SongListType = state.SongListType === SONG_LIST_MODE.current
+      ? SONG_LIST_MODE.history
+      : SONG_LIST_MODE.current
   },
-  [types.PLAY_SONG_NEXT] (state, song) {
-    state.playSongNext = song
+  [types.SET_PLAY_MODE] (state) {
+    let mode = state.PLAY_MODE
+    state.playMode = (mode === PLAY_MODE.sequense && PLAY_MODE.loop) ||
+      (mode === PLAY_MODE.loop && PLAY_MODE.random) ||
+      (mode === PLAY_MODE.random && PLAY_MODE.sequense)
   },
-  // 播放列表
-  [types.PLAYER_LIST] (state, songs) {
-    state.playerList = songs
+  [types.TOGGLE_PLAYER] (state, flag) {
+    state.showPlayer = flag !== undefined ? flag : !state.showPlayer
   },
-  // 播放器 显示隐藏状态
-  [types.SHOW_PLAYER] (state) {
-    state.showPlayer = !state.showPlayer
+  [types.PLAYING] (state) {
+    state.playing = !state.playing
   },
-  // 暂停 播放 状态
-  [types.TOGGLE_PLAY] (state, play) {
-    state.togglePlay = !state.togglePlay
-    if (play !== undefined) {
-      state.togglePlay = play
-    }
+  [types.CHANGE_PLAY_SONG_INDEX] (state, index) {
+    state.playingSongIndex = index
   }
 }
 

@@ -90,7 +90,10 @@
           width 100%
           .playing-icon
             width 30px
-            height 30px
+            line-height 30px
+            &:before
+              color #999
+              margin-left 10px
           .song-name, .author
             overflow hidden
             text-overflow ellipsis
@@ -123,6 +126,11 @@
             color #777
             font-family "微软雅黑"
             line-height 30px
+    .no-songs
+        line-height 30px
+        font-size 12px
+        color #666
+        text-align center
 </style>
 
 <template>
@@ -135,20 +143,23 @@
             <div class="history-player-list active">历史记录</div>
           </div>
           <div class="operation">
-            <div class="song-amount">总{{(playerList && playerList.length) || 0}}首</div>
-            <div class="favorite" v-show="playerList">
+            <div class="song-amount">总{{(songList && songList.length) || 0}}首</div>
+            <div class="favorite" v-show="songList">
               <i class="icon-star"></i>收藏全部</div>
-            <div class="delect" v-show="playerList">清空</div>
+            <div class="delect" v-show="songList">清空</div>
           </div>
           <i class="icon-close-" @click="close"></i>
         </div>
       </div>
       <div class="content">
         <scroll ref="scroll">
-          <ul class="song-item">
-            <li class="song-list" v-for="(song, index) in playerList" v-if="song">
+          <ul class="song-item" v-if="songList">
+            <li class="song-list" 
+                v-for="song in songList"
+                @click="playing(song)"
+            >
                 <div class="song">
-                  <div class="playing-icon"></div>
+                  <div class="playing-icon" :class="{'icon-play': true}"></div>
                   <div class="song-name">{{song.title}}</div>
                   <div class="icon" v-for="icon in _icon(song.biaoshi)">{{icon}}</div>
                   <div class="author">{{song.author}}</div>
@@ -156,6 +167,7 @@
                 <div></div>
             </li>
           </ul>
+          <div class="no-songs" v-else>没有歌曲</div>
         </scroll>
       </div>
     </div>  
@@ -169,7 +181,7 @@
   export default {
     data () {
       return {
-        playerList: null
+        songList: null
       }
     },
     created () {
@@ -178,6 +190,9 @@
       this.$refs.scroll.refresh()
     },
     methods: {
+      playing (song) {
+        this.$store.commit('PLAYING_SONG', song)
+      },
       close () {
         this.$emit('close')
       },
@@ -187,12 +202,12 @@
     },
     computed: {
       $playerList () {
-        return this.$store.state.playerList
+        return this.$store.state.songList
       }
     },
     watch: {
       $playerList () {
-        this.playerList = this.$store.state.playerList
+        this.songList = this.$store.state.songList
       }
     },
     components: {

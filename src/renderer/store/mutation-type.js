@@ -1,7 +1,19 @@
-export const PLAYER_LIST = 'PLAYER_LIST'
-export const PLAY_SONG = 'PLAY_SONG'
-export const PLAY_SONG_PREV = 'PLAY_SONG_PREV'
-export const PLAY_SONG_NEXT = 'PLAY_SONG_NEXT'
-export const TOGGLE_PLAY = 'TOGGLE_PLAY'
+export const SET_SONG_LIST = 'SET_SONG_LIST'
+
+export const SET_PLAYING_SONG = 'SET_PLAYING_SONG'
+
+export const SET_SONG_LIST_MODE = 'SET_SONG_LIST_MODE'
+
+export const CHANGE_PLAY_SONG_INDEX = 'CHANGE_PLAY_SONG_INDEX'
+
+export const SET_PLAY_MODE = 'SET_PLAY_MODE'
+
+export const CLEAR_SONG_LIST = 'CLEAR_SONG_LIST'
+
+export const TOGGLE_SONG_LIST = 'TOGGLE_SONG_LIST'
+
+export const PLAYING = 'PLAYING'
+
+export const TOGGLE_PLAYER = 'TOGGLE_PLAYER'
 
 export const SHOW_PLAYER = 'SHOW_PLAYER'

@@ -212,12 +212,9 @@
       },
       // 显示全部的歌曲
       _showMoreList (list) {
-        console.log(list)
         this.showMore = !this.showMore
-        if (list) {
-          this.showList = list
-          this.$refs.scroll.refreshTop()
-        }
+        this.showList = list
+        this.$refs.scroll.topTo(0)
       }
     },
     components: {

@@ -83,12 +83,12 @@
       <audio ref="audio" :src="songUrl" autoplay></audio>
     </div>
 
-    <mini-player :timer="time" :songLrc="songLrc" :songInfo="song"></mini-player>
+    <mini-player :timer="time" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
 
     <div class="music-control">
-      <div class="prev"><i class="icon-previous"></i></div>
+      <div class="prev" @click="prevSong"><i class="icon-previous"></i></div>
       <div class="toggle" @click="_togglePlay"><i class="icon-pause-"></i></div>
-      <div class="next"><i class="icon-next"></i></div>
+      <div class="next" @click="nextSong"><i class="icon-next"></i></div>
     </div>
 
     <div class="progress-control">
@@ -117,8 +117,8 @@
       <div class="play-mode"><i class="icon-single-m-"></i></div>
       <div class="music-list" ref="musicList" @click.stop.self="togglePlayerList">
         <i class="icon-list-"></i>
-        <div class="music-amount">{{$songAmount}}</div>
-        <player-list @close="showPlayerList = false" class="test" v-show="showPlayerList"></player-list>
+        <div class="music-amount">{{songAmount}}</div>
+        <player-list @close="showPlayerList = false" v-show="showPlayerList"></player-list>
       </div>
     </div>
 
@@ -129,6 +129,7 @@
   import ProgressBar from '@/base/progress-bar/progress-bar'
   import MiniPlayer from '@/components/mini-player/mini-player'
   import PlayerList from '@/components/player-list/player-list'
+  import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {getSong, getLrc} from '@/api/song'
   import {ERR_OK} from '@/api/config'
   import {getTime} from '@/common/js/utils'
@@ -139,6 +140,7 @@
         progressBarTo: 0,
         vol: 0,
         song: this.$store.state.playSong,
+        songInfo: null,
         showPlayerList: false,
         songList: null,
         songUrl: null,
@@ -186,8 +188,10 @@
         }
       },
       prev () {
+        this.prevSong()
       },
       next () {
+        this.nextSong()
       },
       // 调整音量
       volume () {
@@ -220,7 +224,7 @@
         this.showPlayerList = !this.showPlayerList
       },
       _togglePlay () {
-        this.$store.commit('TOGGLE_PLAY')
+        this.PLAYING()
       },
       // 当audio canplay 时开始调用计时
       _canPlay () {
@@ -234,9 +238,10 @@
       },
       // 获取音乐
       _getSong () {
-        getSong(this.song.song_id).then((res) => {
+        getSong(this.playingSong.song_id).then((res) => {
           if (res.error_code === ERR_OK) {
             this.songUrl = res.bitrate.show_link
+            this.songInfo = res.songinfo
             this._canPlay()
           }
         })
@@ -245,12 +250,15 @@
         getLrc(this.song.song_id).then((res) => {
           this.songLrc = res
         })
-      }
-    },
-    components: {
-      ProgressBar,
-      MiniPlayer,
-      PlayerList
+      },
+      ...mapMutations([
+        'TOGGLE_SHOW_PLAYER',
+        'PLAYING'
+      ]),
+      ...mapActions([
+        'prevSong',
+        'nextSong'
+      ])
     },
     computed: {
       // 根据音量调整图标
@@ -263,28 +271,26 @@
           'icon-volume-high': vol <= 100 && vol > 70
         }
       },
-      $songAmount () {
-        return (this.$store.state.playerList && this.$store.state.playerList.length) || 0
-      },
-      // 利用 计算属性 watch 到store里的数据
-      $storeSong () {
-        return this.$store.state.playSong
-      },
-      $storePlay () {
-        return this.$store.state.togglePlay
-      }
+      ...mapGetters([
+        'songAmount',
+        'songList',
+        'showPlayer',
+        'playing',
+        'playingSong'
+      ])
     },
     watch: {
-      // store 里的当前播放音乐变动时 重新获取歌曲
-      $storeSong () {
-        this.song = this.$store.state.playSong
-        this._getLrc()
+      playingSong () {
         this._getSong()
       },
-      // store 的播放状态改变时，切换播放状态
-      $storePlay () {
+      playing () {
         this.togglePlay()
       }
+    },
+    components: {
+      ProgressBar,
+      MiniPlayer,
+      PlayerList
     }
   }
 </script>

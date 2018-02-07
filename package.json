@@ -1,8 +1,8 @@
 {
-  "name": "p-music",
-  "productName": "PMusic",
-  "version": "0.0.0",
-  "author": "",
+  "name": "bili-music",
+  "productName": "biliMusic",
+  "version": "0.0.1",
+  "author": "biliGates",
   "description": "this is a simple music app",
   "license": null,
   "main": "./dist/electron/main.js",

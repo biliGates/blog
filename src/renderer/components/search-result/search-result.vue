@@ -1,6 +1,7 @@
 <style lang="stylus" scoped>
   .search-result 
     padding 30px 40px 0 40px
+    background #f1f1f1
     .close-button
       top 34px
       line-height 40px
@@ -23,7 +24,6 @@
         color #999
         font-weight 600
       .info
-
         height 60px
         width 200px
         box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
@@ -42,7 +42,7 @@
           color #777
           line-height 20px
           display inline-block
-          width 120px
+          max-width 115px
           word-break break-all
 </style>
 
