@@ -87,7 +87,6 @@
         default: {}
       },
       timer: {
-        type: Number
       }
     },
     methods: {

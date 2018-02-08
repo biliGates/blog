@@ -22,7 +22,6 @@
       transform rotate(0deg)
     100%
       transform rotate(360deg)
-
   .player
     position fixed
     top 50px
@@ -68,7 +67,6 @@
             z-index 10
             transform-origin top left
             transform rotate(-20deg)
-            transition all .3s .1s
             .brush-pic
               width 100px
               height 130px
@@ -80,8 +78,7 @@
             border 6px solid rgba(100, 100, 100, 0.2)
             box-shadow 0 0 4px rgba(100, 100, 100, 0.2)
             background url("./disc.png") no-repeat -11px -11px / 301px 301px
-            animation rotation 20000ms linear infinite
-            animation-play-state paused
+            animation rotation 20000ms linear both infinite
             .pic
               display block 
               margin 45px auto
@@ -94,6 +91,11 @@
               transform rotate(0deg)
             .bg
               animation-play-state running
+          &.stop
+            .brush
+              transition all .3s 500ms
+            .bg
+              animation-play-state paused
         .control
           width 300px
           margin 0 auto
@@ -164,14 +166,14 @@
                 width 100%
                 &.active
                   transition all .5s
-                  font-size 20px
+                  font-size 18px
                   color rgba(220, 45, 45, 0.9)
                   font-weight 700
 </style>
 
 <template>
    <transition name="player">
-    <div v-if="showPlayer" class="player">
+    <div v-show="showPlayer" class="player">
       <!-- 背景 -->
       <div class="blur-bg" 
            :style="{'backgroundImage': `linear-gradient(to bottom,rgba(0,0,0,0),rgba(255, 255, 255, 0.5)),url(${songInfo.album_500_500 || songInfo.pic_big})`}"
@@ -182,7 +184,7 @@
       <div class="player-wrapper">
         <div class="album-info">
           <!-- 专辑封面 -->
-          <div class="album-pic" :class="{'rotate': this.$store.state.togglePlay}">
+          <div class="album-pic" :class="rotate">
             <div class="brush">
               <img class="brush-pic" src="./needle.png">
             </div>
@@ -232,7 +234,7 @@
                   <li class="lrc"
                       ref="lrcs"
                       v-for="(key, index) in lrc.keys" 
-                      :class="{'active': _activeLrc(index)}"
+                      :class="{'active': index == highLightLrc}"
                   >{{lrc.lrcs[key]}}</li>
                 </ul>
               </scroll>
@@ -258,7 +260,9 @@
     data () {
       return {
         lrc: null,
-        onScroll: false
+        onScroll: false,
+        showLrc: false,
+        highLightLrc: -1
       }
     },
     props: {
@@ -271,37 +275,31 @@
         default: {}
       },
       timer: {
-        type: Number
+        default: 0
       }
     },
     updated () {
       this.$refs.scroll && this.$refs.scroll.refresh()
     },
     methods: {
-      _activeLrc (index) {
+      _activeLrc () {
         let keys = this.lrc.keys
         let playingTime = this.timer
-        for (let i = 0; i < keys.length; i++) {
-          // 只有当 数组中的时间 小于等于 当前播放的 的部份时间才进逻辑
-          // 大于即是超过了当前播放时间
-          if (keys[i] <= playingTime) {
-            // 当数组中的时间等于播放时间
-            // 或者 数组中的一条时间小于 播放时间 和 数组中的下一条时间 大于 播放时间
-            // （当数组没有下一条时间，不进行判断）
-            if (keys[i] === playingTime ||
-              (keys[i] <= playingTime && (!keys[i + 1] || keys[i + 1] > playingTime))) {
-              this._moveTo(i)
-              return i === index
-            }
+        keys.forEach((now, i) => {
+          let next = keys[i + 1]
+          if (now <= playingTime && next && next > playingTime) {
+            this._moveTo(i)
+            this.highLightLrc = i
+            return false
           }
-        }
+        })
       },
       _moveTo (activeLrc) {
         if (this.activeLrc === activeLrc || this.onScroll) {
           return
         }
         this.activeLrc = activeLrc
-        this.$refs.scroll.topTo((this.$refs.lrcs[activeLrc].offsetTop - 120) / (this.$refs.lrcs[this.$refs.lrcs.length - 1].offsetTop - this.$refs.info.clientHeight - 30))
+        this.$refs.scroll && this.$refs.scroll.topTo((this.$refs.lrcs[activeLrc].offsetTop - 120) / (this.$refs.lrcs[this.$refs.lrcs.length - 1].offsetTop - this.$refs.info.clientHeight - 30))
       },
       _onScroll () {
         this.onScroll = true
@@ -324,15 +322,22 @@
     },
     computed: {
       ...mapGetters([
-        'showPlayer'
-      ])
+        'showPlayer',
+        'playing'
+      ]),
+      rotate () {
+        return this.playing ? 'rotate' : 'stop'
+      }
     },
     watch: {
       songLrc () {
         this._lrc()
       },
+      showPlayer () {
+        this.showLrc = this.showPlayer
+      },
       timer () {
-        !this.timer && !this.lrc && this._activeLrc()
+        this.showLrc && this.lrc && this._activeLrc()
       }
     },
     components: {

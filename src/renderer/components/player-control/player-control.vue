@@ -18,33 +18,39 @@
           line-height 30px
           font-size 18px
           text-align center
+          border 1px solid rgba(7, 17, 27, 0.1)
+          box-shadow 0 0 3px rgba(7, 17, 27, 0.1)
           background rgb(220, 45, 45)
           color #f1f1f1
-          &.icon-pause-
+          transition all .3s
+          &:hover
+            box-shadow 0 0 50px rgba(7, 17, 27, 0.2) inset
+          &.icon-pause-, &.icon-play-
             height 34px
             width 34px
             margin 8px auto
             line-height 34px
             font-size 22px
             font-weight 700
-
+           &.icon-play
+            &:before
+              margin-left 5px
+              font-size 20px
     .progress-control
       flex 1
       .progress-wrapper
         width 90%
-        margin 20px 0 0 5%
+        margin 15px 0 0 5%
 
     .volume-control
       flex 0 0 170px
       margin-right -20px
       .volume
         line-height 50px
-        margin-top 1px
-        margin-right -16px
+        margin 3px -16px 0 0
       .progress-wrapper
-        margin 20px 0 0 20px
+        margin 15px 0 0 20px
         width 110px
-
     .other-control
       flex 0 0 120px
       .play-mode, .music-list
@@ -83,11 +89,11 @@
       <audio ref="audio" :src="songUrl" autoplay></audio>
     </div>
 
-    <mini-player :timer="time" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
+    <mini-player :timer="playTime" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
 
     <div class="music-control">
       <div class="prev" @click="prevSong"><i class="icon-previous"></i></div>
-      <div class="toggle" @click="_togglePlay"><i class="icon-pause-"></i></div>
+      <div class="toggle" @click="_togglePlay"><i :class="playIconCls"></i></div>
       <div class="next" @click="nextSong"><i class="icon-next"></i></div>
     </div>
 
@@ -115,10 +121,10 @@
 
     <div class="other-control">
       <div class="play-mode"><i class="icon-single-m-"></i></div>
-      <div class="music-list" ref="musicList" @click.stop.self="togglePlayerList">
+      <div class="music-list" ref="musicList" @click.stop.self="togglePlayList">
         <i class="icon-list-"></i>
         <div class="music-amount">{{songAmount}}</div>
-        <player-list @close="showPlayerList = false" v-show="showPlayerList"></player-list>
+        <player-list @close="showPlayList = false" v-show="showPlayList"></player-list>
       </div>
     </div>
 
@@ -132,27 +138,25 @@
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {getSong, getLrc} from '@/api/song'
   import {ERR_OK} from '@/api/config'
-  import {getTime} from '@/common/js/utils'
 
   export default {
     data () {
       return {
         progressBarTo: 0,
-        vol: 0,
+        vol: 10,
         song: this.$store.state.playSong,
         songInfo: null,
-        showPlayerList: false,
         songList: null,
         songUrl: null,
         songLrc: null,
-        time: 0,
-        playTime: '00:00',
-        allTime: '00:00'
+        showPlayList: false,
+        playTime: 0,
+        allTime: 0
       }
     },
     created () {
       // 外部点击时隐藏播放列表
-      document.addEventListener('click', this.hidePlayerList, false)
+      document.addEventListener('click', this.hidePlayList, false)
     },
     mounted () {
       this.$nextTick(() => {
@@ -160,25 +164,19 @@
       })
     },
     methods: {
-      // 控制播放进度条
+      // 向子组件传递当前时间
       currentTime () {
         let audio = this.$refs.audio
-        let duration = audio.duration
-        this.allTime = getTime(duration)
+        this.allTime = audio.duration
         let autoPlay = () => {
-          let currentTime = audio.currentTime
-          if (currentTime > audio.currentTime) {
-            return
-          }
-          this.time = currentTime
-          this.playTime = getTime(currentTime)
+          this.playTime = audio.currentTime
           // 拖动进度条时不计算
-          if (this.progressOnMove !== true) {
-            this.progressBarTo = currentTime / duration * 100
+          if (!this.progressOnMove) {
+            this.progressBarTo = this.playTime / this.allTime * 100
           }
         }
-        clearInterval(this.timer)
-        this.timer = setInterval(autoPlay, 300)
+        clearInterval(this.timer1)
+        this.timer1 = setInterval(autoPlay, 300)
       },
       // 切换播放暂停
       togglePlay () {
@@ -215,13 +213,16 @@
         this.vol = movePercentage
         this.volume()
       },
-      // 外部点击时隐藏方法
-      hidePlayerList (e) {
-        this.showPlayerList = this.$refs.musicList.contains(e.target)
+      // 外部点击时隐藏播放列表方法
+      hidePlayList (e) {
+        this.showPlayList = this.$refs.musicList.contains(e.target)
       },
       // icon 点击时切换列表状态
-      togglePlayerList () {
-        this.showPlayerList = !this.showPlayerList
+      togglePlayList () {
+        this.showPlayList = !this.showPlayList
+      },
+      _hidePlayer () {
+        this.TOGGLE_SHOW_PLAYRE(false)
       },
       _togglePlay () {
         this.PLAYING()
@@ -238,7 +239,7 @@
       },
       // 获取音乐
       _getSong () {
-        getSong(this.playingSong.song_id).then((res) => {
+        getSong(this.playingSongId).then((res) => {
           if (res.error_code === ERR_OK) {
             this.songUrl = res.bitrate.show_link
             this.songInfo = res.songinfo
@@ -247,7 +248,7 @@
         })
       },
       _getLrc () {
-        getLrc(this.song.song_id).then((res) => {
+        getLrc(this.playingSongId).then((res) => {
           this.songLrc = res
         })
       },
@@ -275,13 +276,18 @@
         'songAmount',
         'songList',
         'showPlayer',
+        'playingSongId',
         'playing',
         'playingSong'
-      ])
+      ]),
+      playIconCls () {
+        return this.playing ? 'icon-pause-' : 'icon-play'
+      }
     },
     watch: {
       playingSong () {
         this._getSong()
+        this._getLrc()
       },
       playing () {
         this.togglePlay()

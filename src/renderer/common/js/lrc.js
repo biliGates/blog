@@ -25,18 +25,10 @@ const sortTimer = (obj) => {
 // 歌曲信息排序
 const sortInfo = (obj) => {
   let arr = []
-  if ('ti' in obj) {
-    arr.push(`歌曲：${obj['ti']}`)
-  }
-  if ('ar' in obj) {
-    arr.push(`歌手：${obj['ar']}`)
-  }
-  if ('al' in obj) {
-    arr.push(`专辑：${obj['al']}`)
-  }
-  if ('by' in obj) {
-    arr.push(`歌词制作：${obj['by']}`)
-  }
+  'ti' in obj && obj['ti'] !== '0' && arr.push(`歌曲：${obj['ti']}`)
+  'ar' in obj && obj['ar'] !== '0' && arr.push(`歌手：${obj['ar']}`)
+  'al' in obj && obj['al'] !== '0' && arr.push(`专辑：${obj['al']}`)
+  'by' in obj && obj['by'] !== '0' && arr.push(`歌词制作：${obj['by']}`)
   return arr
 }
 

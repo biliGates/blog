@@ -156,10 +156,9 @@
           <ul class="song-item" v-if="songList">
             <li class="song-list" 
                 v-for="song in songList"
-                @click="playing(song)"
             >
                 <div class="song">
-                  <div class="playing-icon" :class="{'icon-play': true}"></div>
+                  <div class="playing-icon" :class="{'icon-pause-' : playingIcon === song.song_id}"></div>
                   <div class="song-name">{{song.title}}</div>
                   <div class="icon" v-for="icon in _icon(song.biaoshi)">{{icon}}</div>
                   <div class="author">{{song.author}}</div>
@@ -176,23 +175,16 @@
 
 <script>
   import Scroll from '@/base/scroll/scroll'
+  import {mapGetters} from 'vuex'
   import {icons} from '@/common/js/utils'
 
   export default {
-    data () {
-      return {
-        songList: null
-      }
-    },
     created () {
     },
     updated () {
       this.$refs.scroll.refresh()
     },
     methods: {
-      playing (song) {
-        this.$store.commit('PLAYING_SONG', song)
-      },
       close () {
         this.$emit('close')
       },
@@ -201,13 +193,12 @@
       }
     },
     computed: {
-      $playerList () {
-        return this.$store.state.songList
-      }
-    },
-    watch: {
-      $playerList () {
-        this.songList = this.$store.state.songList
+      ...mapGetters([
+        'songList',
+        'playingSongId'
+      ]),
+      playingIcon () {
+        return this.playingSongId
       }
     },
     components: {

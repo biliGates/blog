@@ -19,8 +19,8 @@ const mutations = {
   [types.TOGGLE_PLAYER] (state, flag) {
     state.showPlayer = flag !== undefined ? flag : !state.showPlayer
   },
-  [types.PLAYING] (state) {
-    state.playing = !state.playing
+  [types.PLAYING] (state, flag) {
+    state.playing = flag !== undefined ? flag : !state.playing
   },
   [types.CHANGE_PLAY_SONG_INDEX] (state, index) {
     state.playingSongIndex = index

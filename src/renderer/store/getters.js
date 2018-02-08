@@ -11,7 +11,7 @@ export const playingSong = state => state.songList[state.playingSongIndex + 1]
 
 export const playMode = state => state.playMode
 
-export const playingSongId = state => state.songList[state.playingSongIndex + 1].song_id
+export const playingSongId = state => (state.songList[state.playingSongIndex + 1] && state.songList[state.playingSongIndex + 1].song_id) || null
 
 export const playing = state => state.playing
 

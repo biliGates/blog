@@ -10,8 +10,8 @@ export const playingSong = function ({commit, state}, song) {
   if (flag || !songList) {
     songList.splice(index, 0, song)
     commit(types.SET_SONG_LIST, songList)
+    commit(types.PLAYING, true)
   } else {
-    commit(types.CHANGE_PLAY_SONG_INDEX, index + 2)
     console.log('播放列表中已有这首歌')
   }
 }
@@ -38,6 +38,7 @@ export const prevSong = function ({commit, state}) {
   let songsAmount = state.songList.length - 1
   index = index - 1 < 0 ? songsAmount : index - 1
   commit(types.CHANGE_PLAY_SONG_INDEX, index - 1)
+  commit(types.PLAYING, true)
 }
 
 export const nextSong = function ({commit, state}) {
@@ -46,4 +47,5 @@ export const nextSong = function ({commit, state}) {
   index = index + 1 > songsAmount ? 0 : index + 1
   console.log(index)
   commit(types.CHANGE_PLAY_SONG_INDEX, index - 1)
+  commit(types.PLAYING, true)
 }

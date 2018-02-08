@@ -107,17 +107,21 @@
           transition all .3s
           padding 5px 3px
           text-align center
-          &.icon-pause-
-            font-size 18px
-            &:before
-              font-weight 700
-              color #ccc
-          &.icon-play
+          &.icon-star
+            &:hover
+              color rgb(220, 45, 45)
+          &.icon-pause-, &.icon-play
             font-size 18px
             &:hover
-              color #444
-          &:hover
-            color rgb(220, 45, 45)
+              &:before
+                color #444
+          &.icon-pause-
+            &:before
+              color #ccc
+              font-weight 700
+          &.icon-play
+            &:before
+              margin-left 1px
 </style>
 <style lang="stylus">
 em
@@ -139,7 +143,7 @@ em
     <!-- 歌曲部分 -->
     <div class="song"v-for="(song, index) in songList" @click="playing(song)">
       <!-- 序号 -->
-      <div class="count" :class="{'playing': playSong === index && play}">
+      <div class="count" :class="{'playing': playIconCls === song.song_id}">
         <div class="sort-num">{{_toTwo(index)}}</div>
         <i class="icon"></i>
       </div>
@@ -152,7 +156,7 @@ em
       <div class="album-name" v-html="song.album_title"></div>
       <!-- 操作按纽 -->
       <div class="operation">
-        <i :class="playSong === index && play ? 'icon-pause-' : 'icon-play'"
+        <i :class="playIconCls === song.song_id ? 'icon-pause-' : 'icon-play'"
         ></i>
         <i class="icon-star" @click="favorite(song, index)"></i>
       </div>
@@ -164,7 +168,7 @@ em
 
 <script>
   import {toTwo, icons} from '@/common/js/utils'
-  import {mapActions, mapMutations} from 'vuex'
+  import {mapActions, mapMutations, mapGetters} from 'vuex'
 
   export default {
     data () {
@@ -206,6 +210,12 @@ em
       ])
     },
     computed: {
+      ...mapGetters([
+        'playingSongId'
+      ]),
+      playIconCls () {
+        return this.playingSongId
+      }
     }
   }
 </script>

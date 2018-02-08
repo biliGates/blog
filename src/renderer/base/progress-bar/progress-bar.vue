@@ -7,67 +7,71 @@
       width 30px
       font-size 13px
       color #999
-      margin-top -1px
+      margin-top 5px
     .start-time
       text-align left 
     .end-time
       text-align right
-    .bar
-      margin 2px 4px
+    .bar-wrapper
       flex 1
-      border-radius 3px
-      height 6px
-      box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
-      background #d1d1d1
-      .progress
-        width 0%
-        height 6px
-        background rgb(220, 45, 45)
+      margin-top 3px
+      height 16px
+      .bar
         border-radius 3px
-        position relative
-        .progress-ball
-          text-align center
-          position absolute
-          right -6px
-          top -4px
-          width 12px
-          height 12px
-          border 1px solid rgba(7, 17, 27, 0.1)
-          border-radius 50%
-          background #ffffff
-          box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
-          transition box-shadow 0.2s
-          &:hover
-            box-shadow 0 0 10px rgba(7, 17, 27, 0.5)
-      &.hide-ball
-        .progress-ball
-          opacity 0
-          transition opacity 1s 3s, box-shadow 0.2s
-        &:hover
+        margin-top 5px
+        height 6px
+        box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
+        background #d1d1d1
+        .progress
+          width 0%
+          height 6px
+          background rgb(220, 45, 45)
+          border-radius 3px
+          position relative
           .progress-ball
-            transition opacity .3s, box-shadow 0.2s
-            opacity 1
+            text-align center
+            position absolute
+            right -6px
+            top -4px
+            width 12px
+            height 12px
+            border 1px solid rgba(7, 17, 27, 0.1)
+            border-radius 50%
+            background #ffffff
+            box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
+            transition box-shadow 0.2s
+            &:hover
+              box-shadow 0 0 10px rgba(7, 17, 27, 0.5)
+        &.hide-ball
+          .progress-ball
+            opacity 0
+            transition opacity 1s 3s, box-shadow 0.2s
+          &:hover
+            .progress-ball
+              transition opacity .3s, box-shadow 0.2s
+              opacity 1
 </style>
 
 <template>
   <div class="progress-bar">
-    <div class="start-time" v-if="needTimer">{{playTime}}</div>
-
-    <div class="bar" 
-         :class="{'hide-ball': hideBall}" 
-         ref="progressBar" 
-         @mousedown="_progressBallMove"
-    >
-      <div class="progress" :style="{'width': progressWidth}">
-        <div class="progress-ball"></div>
+    <div class="start-time" v-if="needTimer">{{formatPlayTime}}</div>
+    <div class="bar-wrapper"  @mousedown="_progressBallMove">
+      <div class="bar" 
+          :class="{'hide-ball': hideBall}" 
+          ref="progressBar" 
+      >
+        <div class="progress" :style="{'width': progressWidth}">
+          <div class="progress-ball"></div>
+        </div>
       </div>
     </div>
-
-    <div class="end-time" v-if="needTimer">{{allTime}}</div>
+    <div class="end-time" v-if="needTimer">{{formatAllTime}}</div>
   </div>
 </template>
 
 <script>
+  import {getTime} from '@/common/js/utils'
+
   export default {
     data () {
       return {
@@ -84,12 +88,10 @@
         default: 0
       },
       playTime: {
-        type: String,
-        default: '00:00'
+        default: 0
       },
       allTime: {
-        type: String,
-        default: '00:00'
+        default: 0
       },
       hideBall: {
         type: Boolean,
@@ -148,6 +150,12 @@
     computed: {
       progressWidth () {
         return `${this.moveTo}px`
+      },
+      formatAllTime () {
+        return getTime(this.allTime)
+      },
+      formatPlayTime () {
+        return getTime(this.playTime)
       }
     }
   }
