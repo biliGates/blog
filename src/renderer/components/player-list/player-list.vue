@@ -86,15 +86,37 @@
           background rgba(180, 180, 180, .1)
         &:hover
           background rgba(7, 17, 27, 0.1)
+          .song
+            .playing-icon
+              .icon-pause-
+                display none
+                opacity 0
+              .icon-close-
+                display block
+                opacity 1
+                &:hover 
+                  transform scale(1.5)
         .song
           display flex
           width 100%
           .playing-icon
             width 30px
-            line-height 30px
-            &:before
-              color #999
-              margin-left 10px
+            .icon-pause-, .icon-close-
+              transition all .4s
+            .icon-pause-
+              opacity 1
+              &:before
+                color #999
+                margin-left 10px
+                line-height 31px
+            .icon-close-
+              display none
+              opacity 0
+              &:before
+                line-height 30px
+                font-size 10px
+                color #f14545
+                margin-left 11px
           .song-name, .author
             overflow hidden
             text-overflow ellipsis
@@ -153,7 +175,7 @@
             <div class="song-amount">总{{(songList && songList.length) || 0}}首</div>
             <div class="favorite" v-show="songList.length">
               <i class="icon-star"></i>收藏全部</div>
-            <div class="delect" v-show="songList.length">清空</div>
+            <div class="delect" v-show="songList.length" @click="_delectAllSongs">清空</div>
           </div>
           <i class="icon-close-" @click="close"></i>
         </div>
@@ -166,7 +188,10 @@
                 @click="play(song)"
             >
                 <div class="song">
-                  <div class="playing-icon" :class="{'icon-pause-' : playingIcon === song.song_id}"></div>
+                  <div class="playing-icon">
+                    <i class="icon-close-" @click.stop="_delectSong(song.song_id)"></i>
+                    <i :class="{'icon-pause-' : playingIcon === song.song_id}"></i>
+                  </div>
                   <div class="song-name">{{song.title}}</div>
                   <div class="icon" v-for="icon in _icon(song.biaoshi)">{{icon}}</div>
                   <div class="author">{{song.author}}</div>
@@ -198,13 +223,21 @@
       play (song) {
         this.playingSong(song)
       },
+      _delectAllSongs () {
+        this.delectAllSongs()
+      },
+      _delectSong (songId) {
+        this.delectSong(songId)
+      },
       showSongList () {
         this.songListType !== SONG_LIST_TYPE.current &&
           this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.current)
+        this.$refs.scroll.topTo(0)
       },
       showHistorySongList () {
         this.songListType !== SONG_LIST_TYPE.history &&
           this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.history)
+        this.$refs.scroll.topTo(0)
       },
       _icon (text) {
         return icons(text)
@@ -213,7 +246,9 @@
         'SET_SONG_LIST_TYPE'
       ]),
       ...mapActions([
-        'playingSong'
+        'playingSong',
+        'delectSong',
+        'delectAllSongs'
       ])
     },
     computed: {

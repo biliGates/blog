@@ -1,4 +1,6 @@
 import * as types from './mutation-type'
+import {SONG_LIST_TYPE, PLAY_MODE} from '@/common/js/vuex.config'
+import {SUFFLE_LIST} from '@/common/js/suffle-list'
 
 export const playingSong = function ({commit, state}, song) {
   let flag = true
@@ -18,6 +20,22 @@ export const playingSong = function ({commit, state}, song) {
     console.log('播放列表中已有这首歌')
   }
   commit(types.PLAYING, true)
+}
+
+export const delectAllSongs = function ({commit, state}) {
+  state.songListType === SONG_LIST_TYPE.current
+    ? commit(types.SET_SONG_LIST, [])
+    : commit(types.SET_HISTORY_SONG_LIST, [])
+}
+
+export const delectSong = function ({commit, state}, songId) {
+  let list = state.songListType === SONG_LIST_TYPE.current
+    ? state.songList : state.historySongList
+  list.forEach((song, index) => {
+    if (song.song_id === songId) {
+      commit(types.DELECT_SONG, index)
+    }
+  })
 }
 
 export const historySongList = function ({commit, state}, song) {
@@ -70,5 +88,14 @@ export const nextSong = function ({commit, state}) {
 
 export const setPlayMode = function ({commit, state}) {
   let mode = (state.playMode + 1) % 3
-  commit('SET_PLAY_MODE', mode)
+  if (mode === PLAY_MODE.random) {
+    state.oldList = state.songList.slice()
+    let list = state.songList.slice()
+    commit(types.SET_SONG_LIST, SUFFLE_LIST(list))
+    commit(types.SET_PLAY_SONG_INDEX, -1)
+  } else if (mode === PLAY_MODE.sequence && state.oldList) {
+    commit(types.SET_SONG_LIST, state.oldList)
+    commit(types.SET_PLAY_SONG_INDEX, -1)
+  }
+  commit(types.SET_PLAY_MODE, mode)
 }
