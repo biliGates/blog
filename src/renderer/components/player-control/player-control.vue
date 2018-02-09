@@ -127,7 +127,9 @@
     </div>
 
     <div class="other-control">
-      <div class="play-mode" @click="togglePlayMode"><i :class="playModeIconCls"></i></div>
+      <div class="play-mode" @click="togglePlayMode">
+        <i :class="playModeIconCls"></i>
+      </div>
       <div class="music-list" ref="musicList" @click.stop.self="togglePlayList">
         <i class="icon-list-"></i>
         <div class="music-amount">{{songAmount}}</div>
@@ -203,6 +205,7 @@
         this.currentTime()
       },
       ended () {
+        this.historySongList(this.playingSong)
         this.canPlay = false
         this.next()
       },
@@ -266,7 +269,8 @@
       ...mapActions([
         'prevSong',
         'nextSong',
-        'setPlayMode'
+        'setPlayMode',
+        'historySongList'
       ])
     },
     computed: {

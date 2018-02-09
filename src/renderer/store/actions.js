@@ -1,5 +1,4 @@
 import * as types from './mutation-type'
-import {PLAY_MODE} from '@/common/js/vuex.config'
 
 export const playingSong = function ({commit, state}, song) {
   let flag = true
@@ -15,11 +14,24 @@ export const playingSong = function ({commit, state}, song) {
     songList.splice(state.playingSongIndex + 2, 0, song)
     commit(types.SET_SONG_LIST, songList)
   } else {
-    console.log(index)
     commit(types.SET_PLAY_SONG_INDEX, index)
     console.log('播放列表中已有这首歌')
   }
   commit(types.PLAYING, true)
+}
+
+export const historySongList = function ({commit, state}, song) {
+  let flag = true
+  let oldList = state.historySongList.slice()
+  oldList.forEach((oldSong) => {
+    if (oldSong.song_id === song.song_id) {
+      flag = false
+    }
+  })
+  if (flag) {
+    oldList.push(song)
+    flag && commit(types.SET_HISTORY_SONG_LIST, oldList)
+  }
 }
 
 export const songList = function ({commit, state}, list) {
@@ -37,6 +49,7 @@ export const songList = function ({commit, state}, list) {
   len
     ? commit(types.SET_SONG_LIST, songList)
     : songList = list
+  commit(types.PLAYING, true)
 }
 
 export const prevSong = function ({commit, state}) {
@@ -58,10 +71,4 @@ export const nextSong = function ({commit, state}) {
 export const setPlayMode = function ({commit, state}) {
   let mode = (state.playMode + 1) % 3
   commit('SET_PLAY_MODE', mode)
-}
-
-export const playEnd = function ({commit, state}) {
-  if (state.playMode !== PLAY_MODE) {
-
-  }
 }

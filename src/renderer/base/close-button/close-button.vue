@@ -3,21 +3,26 @@
     position fixed
     top 130px
     right 40px
-    width 40px
-    height 30px
+    width 34px
+    height 22px
     border 1px solid rgba(7, 17, 27, 0.1)
     border-radius 4px
-    background rgba(57, 67, 77, 0.1)
+    background #e9e9e9
+    opacity 0.6
+    box-shadow 0 0 4px rgba(7, 17, 27, 0.1)
     text-align center
+    transition all .4s
     i
-      color #fff
-      line-height 30px
-      font-size 20px
+      color #000
+      line-height 22px
+      font-size 16px
+      font-weight 300
+      display block
+      transform rotateZ(10deg)
     &:hover
-      transition all .3s
       box-shadow 0 0 20px rgba(7, 17, 27, 0.2) inset
-      &:active
-        transform scale(1.1)
+    &:active
+      transform scale(1.2)
 </style>
 
 <template>

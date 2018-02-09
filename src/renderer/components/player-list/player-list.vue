@@ -140,23 +140,30 @@
       <div class="header">
         <div class="player-list-type">
           <div class="types">
-            <div class="now-player-list">播放列表</div>
-            <div class="history-player-list active">历史记录</div>
+            <div class="now-player-list" 
+                 :class="{'active': songListType === 0}"
+                 @click="showSongList"
+            >播放列表</div>
+            <div class="history-player-list" 
+                 :class="{'active': songListType === 1}"
+                 @click="showHistorySongList"
+            >历史记录</div>
           </div>
           <div class="operation">
             <div class="song-amount">总{{(songList && songList.length) || 0}}首</div>
-            <div class="favorite" v-show="songList">
+            <div class="favorite" v-show="songList.length">
               <i class="icon-star"></i>收藏全部</div>
-            <div class="delect" v-show="songList">清空</div>
+            <div class="delect" v-show="songList.length">清空</div>
           </div>
           <i class="icon-close-" @click="close"></i>
         </div>
       </div>
       <div class="content">
         <scroll ref="scroll">
-          <ul class="song-item" v-if="songList">
+          <ul class="song-item" v-if="songList.length">
             <li class="song-list" 
                 v-for="song in songList"
+                @click="play(song)"
             >
                 <div class="song">
                   <div class="playing-icon" :class="{'icon-pause-' : playingIcon === song.song_id}"></div>
@@ -176,12 +183,11 @@
 
 <script>
   import Scroll from '@/base/scroll/scroll'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {icons} from '@/common/js/utils'
+  import {SONG_LIST_TYPE} from '@/common/js/vuex.config'
 
   export default {
-    created () {
-    },
     updated () {
       this.$refs.scroll.refresh()
     },
@@ -189,14 +195,33 @@
       close () {
         this.$emit('close')
       },
+      play (song) {
+        this.playingSong(song)
+      },
+      showSongList () {
+        this.songListType !== SONG_LIST_TYPE.current &&
+          this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.current)
+      },
+      showHistorySongList () {
+        this.songListType !== SONG_LIST_TYPE.history &&
+          this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.history)
+      },
       _icon (text) {
         return icons(text)
-      }
+      },
+      ...mapMutations([
+        'SET_SONG_LIST_TYPE'
+      ]),
+      ...mapActions([
+        'playingSong'
+      ])
     },
     computed: {
       ...mapGetters([
         'songList',
-        'playingSongId'
+        'playingSongId',
+        'historySongList',
+        'songListType'
       ]),
       playingIcon () {
         return this.playingSongId
