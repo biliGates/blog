@@ -2,7 +2,6 @@
   .player-control
     display flex
     position relative
-    z-index 200
     .music-control, .progress-control, .volume-control, .other-control
       display flex
     .music-control
@@ -59,6 +58,8 @@
       .play-mode
         width 40px
         text-align center
+        .icon-sequence-m-
+          font-size 20px
       .music-list
         position relative
         margin-left 6px
@@ -86,7 +87,13 @@
   <div class="player-control">
 
     <div class="audio">
-      <audio ref="audio" :src="songUrl" autoplay></audio>
+      <audio ref="audio" 
+             :src="songUrl" 
+             :loop="loop"
+             @ended="ended"
+             @canplay="canplay"
+             autoplay
+      ></audio>
     </div>
 
     <mini-player :timer="playTime" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
@@ -120,7 +127,7 @@
     </div>
 
     <div class="other-control">
-      <div class="play-mode"><i class="icon-single-m-"></i></div>
+      <div class="play-mode" @click="togglePlayMode"><i :class="playModeIconCls"></i></div>
       <div class="music-list" ref="musicList" @click.stop.self="togglePlayList">
         <i class="icon-list-"></i>
         <div class="music-amount">{{songAmount}}</div>
@@ -136,6 +143,7 @@
   import MiniPlayer from '@/components/mini-player/mini-player'
   import PlayerList from '@/components/player-list/player-list'
   import {mapGetters, mapActions, mapMutations} from 'vuex'
+  import {PLAY_MODE} from '@/common/js/vuex.config'
   import {getSong, getLrc} from '@/api/song'
   import {ERR_OK} from '@/api/config'
 
@@ -146,7 +154,6 @@
         vol: 10,
         song: this.$store.state.playSong,
         songInfo: null,
-        songList: null,
         songUrl: null,
         songLrc: null,
         showPlayList: false,
@@ -191,6 +198,14 @@
       next () {
         this.nextSong()
       },
+      canplay () {
+        this.canPlay = true
+        this.currentTime()
+      },
+      ended () {
+        this.canPlay = false
+        this.next()
+      },
       // 调整音量
       volume () {
         this.$refs.audio.volume = this.vol / 100
@@ -221,21 +236,14 @@
       togglePlayList () {
         this.showPlayList = !this.showPlayList
       },
+      togglePlayMode () {
+        this.setPlayMode()
+      },
       _hidePlayer () {
         this.TOGGLE_SHOW_PLAYRE(false)
       },
       _togglePlay () {
         this.PLAYING()
-      },
-      // 当audio canplay 时开始调用计时
-      _canPlay () {
-        this.$refs.audio.addEventListener('canplay', () => {
-          this.canPlay = true
-          this.currentTime()
-        })
-        this.$refs.audio.addEventListener('ended', () => {
-          this.canPlay = false
-        })
       },
       // 获取音乐
       _getSong () {
@@ -243,7 +251,6 @@
           if (res.error_code === ERR_OK) {
             this.songUrl = res.bitrate.show_link
             this.songInfo = res.songinfo
-            this._canPlay()
           }
         })
       },
@@ -258,7 +265,8 @@
       ]),
       ...mapActions([
         'prevSong',
-        'nextSong'
+        'nextSong',
+        'setPlayMode'
       ])
     },
     computed: {
@@ -272,14 +280,26 @@
           'icon-volume-high': vol <= 100 && vol > 70
         }
       },
+      loop () {
+        return this.playMode === PLAY_MODE.loop
+      },
       ...mapGetters([
         'songAmount',
         'songList',
         'showPlayer',
         'playingSongId',
         'playing',
-        'playingSong'
+        'playingSong',
+        'playMode'
       ]),
+      playModeIconCls () {
+        let mode = this.playMode
+        return {
+          'icon-loop-m-': mode === PLAY_MODE.loop,
+          'icon-random-m-': mode === PLAY_MODE.random,
+          'icon-sequence-m-': mode === PLAY_MODE.sequence
+        }
+      },
       playIconCls () {
         return this.playing ? 'icon-pause-' : 'icon-play'
       }

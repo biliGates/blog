@@ -70,7 +70,6 @@
 
 <template>
   <div class="album-info">
-    <close-button @close="close"></close-button>
     <scroll ref="scroll">
       <div class="content" v-if="album">
         <div class="header">
@@ -115,6 +114,7 @@
         </div>
       </div>
     </scroll>
+    <close-button @close="close"></close-button>
   </div>  
 </template>
 

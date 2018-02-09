@@ -181,16 +181,41 @@ em
       songList: {
         type: Array,
         require: true
+      },
+      getSong: {
+        typs: Function,
+        default: null
       }
     },
     created () {
     },
     methods: {
       playerAll () {
-        this.setSongList(this.songList)
+        if (this.getSong) {
+          let songList = []
+          this.songList.forEach((song, index) => {
+            this.getSong(song.song_id, (res) => {
+              songList.push(res)
+              if (songList.length === this.songList.length) {
+                this.setSongList(songList)
+              } else if (index === this.songList.length) {
+                console.log(index)
+                this.setSongList(songList)
+              }
+            })
+          })
+        } else {
+          this.setSongList(this.songList)
+        }
       },
       playing (song) {
-        this.playingSong(song)
+        if (!this.getSong) {
+          this.playingSong(song)
+        } else {
+          // 从搜索界面过来的 song 歌曲信息太少，利用传递过来的方法获取更多数据，并提交action
+          this.getSong(song.song_id, this.playingSong)
+          this.$emit('onClick')
+        }
         this.PLAYING(true)
       },
       favorite (song, index) {

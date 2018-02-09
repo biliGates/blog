@@ -32,6 +32,7 @@
     transform-origin 0 100%
     background #f1f1f1
     overflow hidden
+    z-index 100
     &.player-leave-active
       transition transform .4s, opacity .4s
     &.player-enter-active
@@ -49,7 +50,6 @@
       filter blur(50px) opacity(.5)
     .close-button
       top 40px
-      z-index 20
     .player-wrapper
       position relative
       margin 0 auto
@@ -64,7 +64,6 @@
             position absolute
             top 0
             left 200px
-            z-index 10
             transform-origin top left
             transform rotate(-20deg)
             .brush-pic
@@ -179,17 +178,15 @@
            :style="{'backgroundImage': `linear-gradient(to bottom,rgba(0,0,0,0),rgba(255, 255, 255, 0.5)),url(${songInfo.album_500_500 || songInfo.pic_big})`}"
       ></div>
       
-      <close-button @close="_hidePlayer" class="close-button"></close-button>
-
       <div class="player-wrapper">
         <div class="album-info">
           <!-- 专辑封面 -->
           <div class="album-pic" :class="rotate">
-            <div class="brush">
-              <img class="brush-pic" src="./needle.png">
-            </div>
             <div class="bg">
               <img class ="pic" :src="songInfo.album_500_500 || songInfo.pic_big">
+            </div>
+            <div class="brush">
+              <img class="brush-pic" src="./needle.png">
             </div>
           </div>
           <!-- 操作按钮 -->
@@ -243,7 +240,7 @@
             <div v-else="lrc === null" class="no-lrc">暂无歌词</div>
 
           </div>
-
+          <close-button @close="_hidePlayer" class="close-button"></close-button>
         </div>
       </div>
     </div>

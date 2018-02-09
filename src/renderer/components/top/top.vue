@@ -135,8 +135,6 @@
       </div>
       <!-- 详细的排行榜信息 -->
       <div class="show-more" v-if="showMore">
-
-        <close-button @close="_showMoreList"></close-button>
         
         <div class="top-desc">
           <div class="top-pic">
@@ -153,8 +151,8 @@
         <div class="song-list">
           <song-list :songList="showList.song_list"></song-list>
         </div>
+        <close-button @close="_showMoreList"></close-button>
       </div>
-
     </div>  
   </scroll>
 </template>
@@ -212,9 +210,13 @@
       },
       // 显示全部的歌曲
       _showMoreList (list) {
-        this.showMore = !this.showMore
-        this.showList = list
-        this.$refs.scroll.topTo(0)
+        if (list) {
+          this.showMore = !this.showMore
+          this.showList = list
+          this.$refs.scroll.topTo(0)
+        } else {
+          this.showMore = false
+        }
       }
     },
     components: {

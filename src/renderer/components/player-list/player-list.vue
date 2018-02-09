@@ -7,6 +7,7 @@
     width 400px
     box-shadow 0px 0px 10px rgba(7, 17, 27, 0.1)
     background #f1f1f1
+    z-index 200
     overflow hidden
     transform scale(1)
     transform-origin 85% 106%

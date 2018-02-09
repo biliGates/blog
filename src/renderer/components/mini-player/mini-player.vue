@@ -1,11 +1,11 @@
 <style lang="stylus" scoped>
   .mini-player
-    border-top 1px solid rgba(7, 17, 27, 0.1)
+    position absolute
     height 50px
     width 200px
     top -50px
-    position absolute
-    z-index -1
+    border-top 1px solid rgba(7, 17, 27, 0.1)
+    z-index 20
     .song-pic, .song-info
       float left
     .song-pic

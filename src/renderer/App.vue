@@ -13,6 +13,7 @@
     bottom 0
     height 50px
     width 100%
+  .player-control
     z-index 10
 </style>
 

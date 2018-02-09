@@ -4,8 +4,9 @@ const state = {
   songList: [],
   historySongList: [],
   songListMode: SONG_LIST_MODE.current,
-  palyMode: PLAY_MODE.sequence,
+  playMode: PLAY_MODE.sequence,
   playingSongIndex: -1,
+  topDetail: null,
   playing: false,
   showPlayer: false
 }

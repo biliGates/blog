@@ -1,14 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Recommend from '@/components/recommend/recommend'
-import MyFavorite from '@/components/my-favorite/my-favorite'
-
-import MyRadioStation from '@/components/radio-station/radio-station'
-import Singers from '@/components/singers/singers'
-import Top from '@/components/top/top'
-import NewDisc from '@/components/new-disc/new-disc'
 
 Vue.use(Router)
+
 export default new Router({
   routes: [
     {
@@ -17,7 +11,7 @@ export default new Router({
     },
     {
       path: '/recommend',
-      component: Recommend,
+      component: (resolve) => require(['@/components/recommend/recommend'], resolve),
       children: [
         {
           path: '',
@@ -25,25 +19,29 @@ export default new Router({
         },
         {
           path: 'my-radio-station',
-          component: MyRadioStation
+          component: (resolve) => require(['@/components/radio-station/radio-station'], resolve)
         },
         {
           path: 'singers',
-          component: Singers
+          component: (resolve) => require(['@/components/singers/singers'], resolve)
         },
         {
           path: 'top',
-          component: Top
+          component: (resolve) => require(['@/components/top/top'], resolve)
         },
         {
           path: 'new-disc',
-          component: NewDisc
+          component: (resolve) => require(['@/components/new-disc/new-disc'], resolve)
         }
       ]
     },
     {
       path: '/my-favorite',
-      component: MyFavorite
+      component: (resolve) => require(['@/components/my-favorite/my-favorite'], resolve)
+    },
+    {
+      path: '/search-result/:keyword',
+      component: (resolve) => require(['@/components/search-result/search-result'], resolve)
     }
   ]
 })

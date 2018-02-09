@@ -1,7 +1,14 @@
 <style lang="stylus" scoped>
   .search-result 
     padding 30px 40px 0 40px
-    background #f1f1f1
+    transform translate3d(0, 0, 0)
+    &.result-enter-active, &.result-leave-active
+      transition transform .8s, opacity .5s
+    &.result-leave-to, &.result-enter
+      transform translate3d(-100%, 0, 0)
+      opacity 0
+    &.hide
+      display none
     .close-button
       top 34px
       line-height 40px
@@ -47,30 +54,32 @@
 </style>
 
 <template>
-  <scroll ref="scroll">
-    <div class="search-result">
-      <close-button class="close-button" @close="close"></close-button>
+  <scroll ref="scroll" class="scroll">
+    <transition name="result">
+      <div class="search-result">
+        <close-button class="close-button" @close="close"></close-button>
 
-      <div class="keywords">
-        <p class="tips">搜索<span class="query"> "{{searchResult.query}}" </span>的结果是:</p>
-      </div>
-
-      <div class="singer-or-album" v-if="singer || album">
-        <div class="text">最佳匹配</div>
-        <div class="info" v-if="singer">
-          <img class="img" :src="singer.avatar.big || singer.avatar.small" alt="">
-          <h2 class="name">歌手：{{singer.name}}</h2>
+        <div class="keywords">
+          <p class="tips">搜索<span class="query"> "{{$route.params.keyword}}" </span>的结果是:</p>
         </div>
-        <div class="info" v-if="album">
-          <img class="img" :src="album.pic_big" alt="">
-          <h2 class="name">专辑：{{album.title}}</h2>
+
+        <div class="singer-or-album">
+          <div class="text">最佳匹配</div>
+          <div class="info" v-if="singer">
+            <img class="img" :src="singer.avatar.big || singer.avatar.small" alt="">
+            <h2 class="name">歌手：{{singer.name}}</h2>
+          </div>
+          <div class="info" v-if="album">
+            <img class="img" :src="album.pic_big || album.pic_s500" alt="">
+            <h2 class="name">专辑：{{album.title}}</h2>
+          </div>
+        </div>
+
+        <div class="song-list" v-if="songList">
+          <song-list :getSong="getSong" @onClick="showPlayer" :songList="songList"></song-list>
         </div>
       </div>
-
-      <div class="song-list" v-if="songList">
-        <song-list :songList="songList"></song-list>
-      </div>
-    </div>
+    </transition>
   </scroll>
 </template>
 
@@ -78,51 +87,64 @@
   import CloseButton from '@/base/close-button/close-button'
   import SongList from '@/base/song-list/song-list'
   import Scroll from '@/base/scroll/scroll'
+  import {search} from '@/api/search'
+  import {getSong} from '@/api/song'
+  import {mapMutations} from 'vuex'
+  import {ERR_OK} from '@/api/config'
 
   export default {
     data () {
       return {
         singer: null,
         album: null,
-        songList: null
+        songList: null,
+        searchHistory: [],
+        getSong: function (songId, fn) {
+          return getSong(songId).then((res) => {
+            if (res.error_code === ERR_OK) {
+              fn(res.songinfo)
+            }
+          })
+        }
       }
-    },
-    props: {
-      searchResult: {
-        type: Object,
-        require: true
-      }
-    },
-    created () {
-      console.log(this.searchResult)
-      this._analysisSerchResult()
     },
     updated () {
-      this.$refs.scroll.refreshTop()
       this.$refs.scroll.refresh()
     },
     methods: {
       // 关闭搜索结果窗口
       close () {
-        this.$emit('close')
+        this.$router.go(-1)
       },
-      _analysisSerchResult () {
-        this.singer = this.searchResult.artist
-        this.album = this.searchResult.album
-        this.songList = this.searchResult.song_list
-        console.log(this.singer)
-        console.log(this.album)
+      showPlayer () {
+        this.TOGGLE_PLAYER(true)
+      },
+      _search () {
+        let keyword = this.$route.params.keyword
+        search(keyword).then((res) => {
+          this.singer = res.artist
+          this.album = res.album
+          this.songList = res.song_list
+        })
+      },
+      ...mapMutations([
+        'TOGGLE_PLAYER'
+      ])
+    },
+    computed: {
+      updata () {
+        return this.$route.params.keyword
+      }
+    },
+    watch: {
+      updata () {
+        this._search()
       }
     },
     components: {
       CloseButton,
       SongList,
       Scroll
-    },
-    watch: {
-      searchResult () {
-        this._analysisSerchResult()
-      }
     }
   }
 </script>

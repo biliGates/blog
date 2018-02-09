@@ -5,7 +5,6 @@
     right 40px
     width 40px
     height 30px
-    z-index 10
     border 1px solid rgba(7, 17, 27, 0.1)
     border-radius 4px
     background rgba(57, 67, 77, 0.1)

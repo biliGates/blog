@@ -68,7 +68,7 @@
         background #f1f1f1
         position relative
         top 10px
-        z-index 200 
+        z-index 20
         margin-top 5px
         border-radius 5px
         border-left 1px solid rgba(7, 17, 27, 0.1)
@@ -115,21 +115,6 @@
                 background-color #e1e1e1
               &:active
                 box-shadow 0 0 2px rgba(7, 17, 27, 0.2)
-      .search-result-wrapper
-        position absolute
-        top 50px
-        bottom 51px
-        right 0
-        left 0
-        z-index 100
-        background #e9e9e9
-        box-shadow -10px -10px 20px rgba(7, 17, 27, .1) inset
-        transform translate3d(0, 0, 0)
-        &.result-enter-active, &.result-leave-active
-          transition transform .8s, opacity .5s
-        &.result-leave-to, &.result-enter
-          transform translate3d(-100%, 0, 0)
-          opacity 0
     .control
       flex 0 0 180px
       font-size 0
@@ -194,16 +179,6 @@
 
         </div>
       </transition>
-
-      <!-- 搜索结果 -->
-      <transition name="result">
-        <div class="search-result-wrapper" v-if="showSearchResult">
-          <search-result :searchResult="searchResult"
-                         @close="_hideSearchResult"
-          ></search-result>
-        </div>
-      </transition>
-
     </div>
 
     <!-- 最大化、最小化和关闭按纽 -->
@@ -224,20 +199,15 @@
 
 <script>
   import {ipcRenderer} from 'electron'
-  import {searchSuggest, search} from '@/api/search'
+  import {searchSuggest} from '@/api/search'
   import SearchResult from '@/components/search-result/search-result'
+  import {mapMutations} from 'vuex'
 
   export default {
     data () {
       return {
-        // 搜索建议
         suggests: [],
-        // 用户输入
-        userInput: '',
-        // 搜索到的数据
-        searchResult: null,
-        // 显示搜索结果面板
-        showSearchResult: false
+        userInput: ''
       }
     },
     methods: {
@@ -259,21 +229,14 @@
       },
       // 搜索
       _search (word) {
-        if (!word) {
-          return
-        }
+        if (!word) return
         this.userInput = ''
-        search(word).then((res) => {
-          this.searchResult = res
-          // 清空搜索建议， 显示搜索结果
-          this.suggests = []
-          this.showSearchResult = true
-        })
+        this.$router.push(`/search-result/${word}`)
+        this.suggests = []
       },
-      // 切换搜索结果 显示 隐藏
-      _hideSearchResult () {
-        this.showSearchResult = false
-      }
+      ...mapMutations([
+        'TOGGLE_PLAYER'
+      ])
     },
     computed: {
       // 是否有搜索建议 时 显示的提示类型

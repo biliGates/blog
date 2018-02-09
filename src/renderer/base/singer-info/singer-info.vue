@@ -79,7 +79,6 @@
 <template>
   <scroll ref="scroll">
     <div class="singer-info" v-if="singerInfo !== null && singerSongList !== null">
-      <close-button class="close-button" @close="back"></close-button>
       <div class="info">
         <div class="avatar">
           <img class="img" :src="singerInfo.avatar_big" alt="">
@@ -116,6 +115,7 @@
           <song-list :songList="singerSongList.songlist"></song-list>
         </div>
       </div>
+      <close-button class="close-button" @close="back"></close-button>
     </div>
   </scroll>
 </template>
