@@ -237,7 +237,7 @@
               </scroll>
             </div>
             <!-- 没有歌词显示 -->
-            <div v-else="lrc === null" class="no-lrc">暂无歌词</div>
+            <div v-else class="no-lrc">暂无歌词</div>
 
           </div>
           <close-button @close="_hidePlayer" class="close-button"></close-button>

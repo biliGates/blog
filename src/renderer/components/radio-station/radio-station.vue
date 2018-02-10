@@ -15,9 +15,9 @@
 
 <template>
   <scroll ref="scroll">
-    <div class="radio-station">
+    <div class="radio-station" v-if="imgs.length">
       <div class="radio-list-wrapper">
-        <div class="slider-wrapper" v-if="imgs.length">
+        <div class="slider-wrapper">
           <slider @sliderOnClick="showRadio" :imgs="imgs"></slider>
         </div>
         <div class="radio-list">
@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+    <loading v-else slot="loading"></loading>
   </scroll>
 </template>
 
@@ -38,6 +39,8 @@
   import ImgList from '@/base/img-list/img-list'
   import Slider from '@/base/slider/slider'
   import Scroll from '@/base/scroll/scroll'
+  import Loading from '@/base/loading/loading'
+
   const SONGS_AMOUNT = 9 // 一次性获取音乐数量 从 0 计数
 
   export default {
@@ -95,7 +98,8 @@
     components: {
       ImgList,
       Slider,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>

@@ -113,6 +113,7 @@
           <song-list :songList="album.songlist"></song-list>
         </div>
       </div>
+      <loading slot="loading" v-if="album === null"></loading>
     </scroll>
     <close-button @close="close"></close-button>
   </div>  
@@ -123,6 +124,7 @@
   import Scroll from '@/base/scroll/scroll'
   import CloseButton from '@/base/close-button/close-button'
   import SongList from '@/base/song-list/song-list'
+  import Loading from '@/base/loading/loading'
 
   export default {
     data () {
@@ -156,7 +158,8 @@
     components: {
       Scroll,
       SongList,
-      CloseButton
+      CloseButton,
+      Loading
     }
   }
 </script>

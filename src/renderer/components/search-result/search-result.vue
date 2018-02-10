@@ -1,68 +1,73 @@
 <style lang="stylus" scoped>
-  .search-result 
-    padding 30px 40px 0 40px
+  .result
     transform translate3d(0, 0, 0)
     &.result-enter-active, &.result-leave-active
       transition transform .8s, opacity .5s
     &.result-leave-to, &.result-enter
       transform translate3d(-100%, 0, 0)
       opacity 0
-    &.hide
-      display none
-    .close-button
-      top 34px
-    .keywords
-      padding-bottom 40px
-      border-bottom 1px solid rgba(7, 17, 27, 0.1)
-      .tips
-        font-size 13px
-        font-weight 600
-        color #777
-        .query
+    .search-result 
+      padding 30px 40px 0 40px
+      &.hide
+        display none
+      .close-button
+        top 34px
+      .keywords
+        padding-bottom 40px
+        border-bottom 1px solid rgba(7, 17, 27, 0.1)
+        .tips
           font-size 13px
-          color rgb(220, 45, 45)
-    .singer-or-album
-      padding 20px 0
-      border-bottom 1px solid rgba(7, 17, 27, 0.1)
-      .text
-        margin-bottom 5px
-        font-size 12px
-        color #999
-        font-weight 600
-      .info
-        height 60px
-        width 200px
-        box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
-        padding 4px
-        border 1px solid rgba(7, 17, 27, 0.1)
-        box-sizing border-box
-        background #e6e6e6
-        .img
-          width 50px
-          height 50px
-        .name
-          vertical-align top
-          margin 8px
-          font-size 14px
           font-weight 600
           color #777
-          line-height 20px
-          display inline-block
-          max-width 115px
-          word-break break-all
+          .query
+            font-size 13px
+            color rgb(220, 45, 45)
+      .singer-or-album
+        padding 20px 0
+        border-bottom 1px solid rgba(7, 17, 27, 0.1)
+        .text
+          margin-bottom 5px
+          font-size 12px
+          color #999
+          font-weight 600
+        .info
+          height 60px
+          width 200px
+          box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
+          padding 4px
+          border 1px solid rgba(7, 17, 27, 0.1)
+          box-sizing border-box
+          background #e6e6e6
+          .img
+            width 50px
+            height 50px
+          .name
+            vertical-align top
+            margin 8px
+            font-size 14px
+            font-weight 600
+            color #777
+            line-height 20px
+            display inline-block
+            max-width 115px
+            word-break break-all  
+      .not-result
+        font-size 13px
+        font-weight 600
+        line-height 30px
+        color #666
 </style>
 
 <template>
-  <scroll ref="scroll" class="scroll">
-    <transition name="result">
+  <transition name="result">
+    <scroll class="result" ref="scroll">
       <div class="search-result">
-        <close-button class="close-button" @close="close"></close-button>
 
         <div class="keywords">
           <p class="tips">搜索<span class="query"> "{{$route.params.keyword}}" </span>的结果是:</p>
         </div>
 
-        <div class="singer-or-album">
+        <div class="singer-or-album" v-if="singer || album">
           <div class="text">最佳匹配</div>
           <div class="info" v-if="singer">
             <img class="img" :src="singer.avatar.big || singer.avatar.small" alt="">
@@ -74,12 +79,14 @@
           </div>
         </div>
 
-        <div class="song-list" v-if="songList">
+        <div v-if="songList">
           <song-list :getSong="getSong" @onClick="showPlayer" :songList="songList"></song-list>
         </div>
+        <div v-else class="not-result">没有匹配的结果 :)</div>
+        <close-button class="close-button" @close="close"></close-button>
       </div>
-    </transition>
-  </scroll>
+    </scroll>
+  </transition>
 </template>
 
 <script>

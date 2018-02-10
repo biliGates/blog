@@ -87,15 +87,16 @@
               <img-list @onClick="_showSingerInfo" 
                         v-if="singerList.length" 
                         :imgsList="showSingerList" 
+                        @updateEnd="scrollRefresh"   
                         ref="imgList"
               ></img-list>
-              <loading></loading>
             </div>
           </div>
         </div>  
+        <loading slot="loading" v-if="!singerList.length"></loading>
       </scroll>
     </div>
-    <div class="singer-info" v-else="showSingerInfo">
+    <div class="singer-info" v-else>
       <singer-info @back="toggleShowSingerInfo"  :singerId="singerId"></singer-info>
     </div>
   </div>
@@ -105,7 +106,7 @@
   import getSingersList from '@/api/singers'
   import ImgList from '@/base/img-list/img-list'
   import SingerInfo from '@/base/singer-info/singer-info'
-  import Loading from 'vue-loading-template'
+  import Loading from '@/base/loading/loading'
   import Scroll from '@/base/scroll/scroll'
 
   export default {
@@ -124,13 +125,10 @@
     created () {
       this._getSingersList()
     },
-    mounted () {
-      this.$nextTick(() => {
-        console.log('11')
-        this.$refs.scroll.refresh()
-      })
-    },
     methods: {
+      scrollRefresh () {
+        this.$refs.scroll.refresh()
+      },
       toggleShowSingerInfo () {
         this.showSingerInfo = !this.showSingerInfo
       },

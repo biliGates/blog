@@ -154,15 +154,17 @@
         <close-button @close="_showMoreList"></close-button>
       </div>
     </div>  
+    <loading slot="loading" v-show="!tops.length"></loading>
   </scroll>
 </template>
 
 <script>
-  import {type, getTops} from '@/api/top'
-  import {getSong} from '@/api/song'
   import Scroll from '@/base/scroll/scroll'
   import SongList from '@/base/song-list/song-list'
   import CloseButton from '@/base/close-button/close-button'
+  import Loading from '@/base/loading/loading'
+  import {type, getTops} from '@/api/top'
+  import {getSong} from '@/api/song'
 
   export default {
     data () {
@@ -222,7 +224,8 @@
     components: {
       Scroll,
       SongList,
-      CloseButton
+      CloseButton,
+      Loading
     }
   }
 </script>

@@ -41,6 +41,25 @@
       right 10px
       bottom 0
       overflow hidden
+      .slideLeft-enter
+        transform translate3d(100%, 0, 0)
+      .slideLeft-leave-to
+        transform translate3d(-100%, 0, 0)
+        opacity 0
+      .slideLeft-enter-active
+        transition all 1s
+      .slideLeft-leave-active
+        transition all .6s
+      .slideRight-enter
+        transform translate3d(-100%, 0, 0)
+      .slideRight-leave-to
+        transform translate3d(100%, 0, 0)
+        opacity 0
+      .slideRight-enter-active
+        transition all 1s
+      .slideRight-leave-active
+        transition all .6s
+        
 </style>
 
 <template>
@@ -63,24 +82,40 @@
     </div>
     <div class="content">
       <keep-alive>
-        <router-view></router-view>
+        <transition :name="transitionName">
+          <router-view class="recommend-wrapper"></router-view>
+        </transition>
       </keep-alive>
     </div>
   </div>
 </template>
 
 <script>
+  const ROUTER_LINK = ['/recommend/my-radio-station', '/recommend/singers', '/recommend/top', '/recommend/new-disc']
   export default {
     data () {
       return {
-        scrollBarWidth: 10
+        transitionName: 'slideLeft'
       }
+    },
+    created () {
+      this.prevLink = 0
     },
     methods: {
-      scrollRefresh () {
+      animation () {
+        let routerLink = this.$route.path
+        for (let i = 0; i < ROUTER_LINK.length; i++) {
+          if (ROUTER_LINK[i] === routerLink) {
+            this.transitionName = this.prevLink - i < 0 ? 'slideLeft' : 'slideRight'
+            this.prevLink = i
+          }
+        }
       }
     },
-    components: {
+    watch: {
+      $route () {
+        this.animation()
+      }
     }
   }
 </script>

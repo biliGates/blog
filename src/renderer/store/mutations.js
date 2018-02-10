@@ -16,6 +16,8 @@ const mutations = {
   },
   [types.PLAYING] (state, flag) {
     state.playing = flag !== undefined ? flag : !state.playing
+    console.log(flag)
+    console.log(state.playing)
   },
   [types.SET_PLAY_SONG_INDEX] (state, index) {
     state.playingSongIndex = index

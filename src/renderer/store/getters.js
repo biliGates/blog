@@ -1,8 +1,12 @@
-export const songList = state => state.songList
+import {SONG_LIST_TYPE} from '@/common/js/vuex.config.js'
+
+export const songList = state => {
+  return state.songListType === SONG_LIST_TYPE.current
+    ? state.songList
+    : state.historySongList
+}
 
 export const songListType = state => state.songListType
-
-export const historySongList = state => state.historySongList
 
 export const playingSong = state => state.songList[state.playingSongIndex + 1]
 

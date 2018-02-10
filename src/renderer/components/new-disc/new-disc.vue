@@ -76,6 +76,7 @@
             </ul>
           </div>
         </div>
+        <loading slot="loading" v-if="!times.length"></loading>
       </scroll>
     </div> 
     <album-info @close="hideAlbumInfo" v-if="showAlbumInfo" :albumId="albumId"></album-info>
@@ -86,9 +87,10 @@
 <script>
   import newDisc from '@/api/new-disc'
   import Scroll from '@/base/scroll/scroll'
+  import AlbumInfo from '@/base/album-info/album-info'
+  import Loading from '@/base/loading/loading'
   import {ERR_OK} from '@/api/config'
   import {supplementElement} from '@/common/js/utils'
-  import AlbumInfo from '@/base/album-info/album-info'
 
   export default {
     data () {
@@ -143,7 +145,8 @@
     },
     components: {
       Scroll,
-      AlbumInfo
+      AlbumInfo,
+      Loading
     }
   }
 </script>

@@ -187,7 +187,8 @@ em
         default: null
       }
     },
-    created () {
+    updated () {
+      this.$emit('updateEnd')
     },
     methods: {
       playerAll () {

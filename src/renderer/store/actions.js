@@ -6,6 +6,7 @@ export const playingSong = function ({commit, state}, song) {
   let flag = true
   let songList = state.songList.slice()
   let index = 0
+  let playingSongIndex = state.playingSongIndex
   songList.forEach((oldSong, i) => {
     if (oldSong.song_id === song.song_id) {
       flag = false
@@ -13,13 +14,20 @@ export const playingSong = function ({commit, state}, song) {
     }
   })
   if (flag || !songList) {
-    songList.splice(state.playingSongIndex + 2, 0, song)
+    songList.splice(playingSongIndex + 2, 0, song)
     commit(types.SET_SONG_LIST, songList)
+    commit(types.PLAYING, true)
   } else {
-    commit(types.SET_PLAY_SONG_INDEX, index)
-    console.log('播放列表中已有这首歌')
+    if (songList[playingSongIndex + 1].song_id === song.song_id) {
+      state.playing
+        ? commit(types.PLAYING, false)
+        : commit(types.PLAYING, true)
+    } else {
+      commit(types.SET_PLAY_SONG_INDEX, index)
+      console.log('播放列表中已有这首歌')
+      commit(types.PLAYING, true)
+    }
   }
-  commit(types.PLAYING, true)
 }
 
 export const delectAllSongs = function ({commit, state}) {

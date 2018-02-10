@@ -191,12 +191,12 @@
       // 开始动画
       _startAnimated () {
         this.run = true
-        this.$refs.sliderChild[4].addEventListener('animationend', this._autoPlay)
+        this.$refs.sliderChild[4] && this.$refs.sliderChild[4].addEventListener('animationend', this._autoPlay)
       },
       // 暂停动画
       _stopAnimated () {
         this.run = false
-        this.$refs.sliderChild[4].removeEventListener('animationend', this._autoPlay)
+        this.$refs.sliderChild[4] && this.$refs.sliderChild[4].removeEventListener('animationend', this._autoPlay)
       },
       // 切换class实现动画
       _autoPlay () {
@@ -206,8 +206,6 @@
           this.run = true
         }, 2000)
       }
-    },
-    computed: {
     }
   }
 </script>

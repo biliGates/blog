@@ -117,16 +117,18 @@
       </div>
       <close-button class="close-button" @close="back"></close-button>
     </div>
+    <loading slot="loading" v-else></loading>
   </scroll>
 </template>
 
 <script>
+  import SongList from '@/base/song-list/song-list'
+  import CloseButton from '@/base/close-button/close-button'
+  import Loading from '@/base/loading/loading'
+  import Scroll from '@/base/scroll/scroll'
   import {getSingerInfo, getSingerSongList} from '@/api/singer-info'
   import {ERR_OK} from '@/api/config'
   import {collatingText} from '@/common/js/utils'
-  import SongList from '@/base/song-list/song-list'
-  import CloseButton from '@/base/close-button/close-button'
-  import Scroll from '@/base/scroll/scroll'
 
   export default {
     data () {
@@ -170,7 +172,8 @@
     components: {
       SongList,
       CloseButton,
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>

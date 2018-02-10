@@ -39,14 +39,13 @@
          :style="ScrollBarSize"
          @mousedown.prevent="_scrolling"
     ></div>
+    <slot name="loading"></slot>
   </div>
 </template>
 
 <script>
-  // 鼠标移动方向
-  const DOWN = 150
-  // 鼠标滚轮一格 移动距离 单位px
-  const STEP = 100
+  const DOWN = 150 // 移动方向
+  const STEP = 100 // 滚轮一格移动距离 单位PX
 
   export default {
     props: {
@@ -54,6 +53,7 @@
         type: Number,
         default: 10
       },
+      // 歌词滚动界面需要的过渡效果
       transition: {
         type: Boolean,
         default: false
@@ -72,6 +72,7 @@
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this._getHeight()
+        console.log(1)
       }, 20)
     },
     // 页面激活时监听resize事件
@@ -84,12 +85,15 @@
       window.removeEventListener('resize', this._resize)
     },
     methods: {
-      // 刷新滚动
+      // 对外提供 的 刷新高度方法
       refresh () {
         this._getHeight()
       },
-      // 歌词界面用的自动滚动效果
+      // 对外提供 的 滚动到指定高度方法 值必须小于1 大于0
       topTo (top) {
+        if (top > 1 || top < 0) {
+          return
+        }
         this.top = top
       },
       // 监听resize事件
@@ -118,7 +122,7 @@
             ? (_top + step > 1 ? 1 : _top + step)
             : (_top + step < 0 ? 0 : _top + step)
         }
-        let moveEnd = () => {
+        function moveEnd () {
           this.scrollEnd()
           document.removeEventListener('mousemove', moveStart)
           document.removeEventListener('mouseup', moveEnd)
