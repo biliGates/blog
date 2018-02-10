@@ -54,7 +54,7 @@
   <div ref="imgList" class="img-list">
     <ul class="img-list">
       <li class="img-item" v-for="img in imgsList">
-        <div class="info" @click="feedback(img.data)" v-if="img">
+        <div class="info" @click="listOnClick(img.data, img.name)" v-if="img">
           <div :class="{'round' : round}">
             <img :src="img.img" class="avatar">
           </div>
@@ -96,8 +96,8 @@
       this.$emit('updateEnd')
     },
     methods: {
-      feedback (data) {
-        this.$emit('onClick', data)
+      listOnClick (data, name) {
+        this.$emit('onClick', data, name)
       },
       _supplementElement () {
         this.oldWidth = document.documentElement.clientWidth

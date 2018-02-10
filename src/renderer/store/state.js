@@ -6,6 +6,10 @@ const state = {
   playMode: PLAY_MODE.sequence,
   songListType: SONG_LIST_TYPE.current,
   playingSongIndex: -1,
+  radioStationChennel: null,
+  radioStationSong: null,
+  needPrevSong: false,
+  radioStationMode: false,
   playing: false,
   showPlayer: false,
   intialData: null

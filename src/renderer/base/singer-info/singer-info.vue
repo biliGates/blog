@@ -77,48 +77,50 @@
 </style>
 
 <template>
-  <scroll ref="scroll">
-    <div class="singer-info" v-if="singerInfo !== null && singerSongList !== null">
-      <div class="info">
-        <div class="avatar">
-          <img class="img" :src="singerInfo.avatar_big" alt="">
-        </div>
-        <div class="desc">
-          <h2 class="name">
-            <span class="singer">{{singerInfo.country}}</span>
-            <span>{{singerInfo.name}}</span>
-          </h2>
-          <div class="other-info">
-            <p class="song-amount">
-              <span class="type">歌曲数:</span>
-              <span class="amount">{{singerSongList.songnums}}</span>
-            </p>
-            <p class="album-amount">
-              <span class="type">专辑数:</span>
-              <span class="amount">{{singerInfo.albums_total}}</span>
-            </p>
-            <p class="mv-amount">
-              <span class="type">MV数:</span>
-              <span class="amount">{{singerInfo.mv_total}}</span>
-            </p>
+  <transition @beforeEnter="beforeEnter" @enter="enter" @leave="leave">
+    <scroll ref="scroll">
+      <div class="singer-info" v-if="singerInfo !== null && singerSongList !== null">
+        <div class="info">
+          <div class="avatar">
+            <img class="img" :src="singerInfo.avatar_big" alt="">
+          </div>
+          <div class="desc">
+            <h2 class="name">
+              <span class="singer">{{singerInfo.country}}</span>
+              <span>{{singerInfo.name}}</span>
+            </h2>
+            <div class="other-info">
+              <p class="song-amount">
+                <span class="type">歌曲数:</span>
+                <span class="amount">{{singerSongList.songnums}}</span>
+              </p>
+              <p class="album-amount">
+                <span class="type">专辑数:</span>
+                <span class="amount">{{singerInfo.albums_total}}</span>
+              </p>
+              <p class="mv-amount">
+                <span class="type">MV数:</span>
+                <span class="amount">{{singerInfo.mv_total}}</span>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="intro">
-        <div class="tag">
-          <span>歌手简介</span>
+        <div class="intro">
+          <div class="tag">
+            <span>歌手简介</span>
+          </div>
+          <p class="text"  v-html="_createIntro(singerInfo.intro)"></p>
         </div>
-        <p class="text"  v-html="_createIntro(singerInfo.intro)"></p>
-      </div>
-      <div class="songs">
-        <div class="song-list" v-if="singerSongList !== null">
-          <song-list :songList="singerSongList.songlist"></song-list>
+        <div class="songs">
+          <div class="song-list" v-if="singerSongList !== null">
+            <song-list :songList="singerSongList.songlist"></song-list>
+          </div>
         </div>
+        <close-button class="close-button" @close="back"></close-button>
       </div>
-      <close-button class="close-button" @close="back"></close-button>
-    </div>
-    <loading slot="loading" v-else></loading>
-  </scroll>
+      <loading slot="loading" v-else></loading>
+    </scroll>  
+  </transition>
 </template>
 
 <script>
@@ -164,6 +166,15 @@
             this.singerSongList = res
           }
         })
+      },
+      beforeEnter (el) {
+        console.log(el)
+      },
+      enter (el) {
+        console.log(el)
+      },
+      leave (el) {
+        console.log(el)
       },
       _createIntro (text) {
         return collatingText(text)

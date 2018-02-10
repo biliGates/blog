@@ -1,7 +1,7 @@
 import {URL, COMMON_PARAMS} from './config'
 import jsonp from '@/common/js/jsonp'
 
-export const getTops = (type, amount) => {
+export function getTops (type, amount) {
   let params = Object.assign({}, COMMON_PARAMS, {
     method: 'baidu.ting.billboard.billList',
     type: type,

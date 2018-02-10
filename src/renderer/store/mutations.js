@@ -16,8 +16,6 @@ const mutations = {
   },
   [types.PLAYING] (state, flag) {
     state.playing = flag !== undefined ? flag : !state.playing
-    console.log(flag)
-    console.log(state.playing)
   },
   [types.SET_PLAY_SONG_INDEX] (state, index) {
     state.playingSongIndex = index
@@ -29,6 +27,18 @@ const mutations = {
     state.songListType === SONG_LIST_TYPE.current
       ? state.songList.splice(index, 1)
       : state.historySongList.splice(index, 1)
+  },
+  [types.SET_RADIO_STATION_MODE] (state, mode) {
+    state.radioStationMode = mode
+  },
+  [types.SET_RADIO_STATION_CHENNEL] (state, channel) {
+    state.radioStationChennel = channel
+  },
+  [types.SET_RADIO_STATION_SONG] (state, song) {
+    state.radioStationSong = song
+  },
+  [types.NEED_PREV_SONG] (state, flag) {
+    state.needPrevSong = flag
   }
 }
 

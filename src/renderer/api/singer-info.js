@@ -1,7 +1,7 @@
 import {URL, COMMON_PARAMS} from './config'
 import jsonp from '@/common/js/jsonp'
 
-export const getSingerInfo = (id) => {
+export function getSingerInfo (id) {
   let params = Object.assign({}, COMMON_PARAMS, {
     method: 'baidu.ting.artist.getinfo',
     tinguid: id
@@ -9,7 +9,7 @@ export const getSingerInfo = (id) => {
   return jsonp(URL, params)
 }
 
-export const getSingerSongList = (id, amount = 30) => {
+export function getSingerSongList (id, amount = 30) {
   let params = Object.assign({}, COMMON_PARAMS, {
     method: 'baidu.ting.artist.getSongList',
     tinguid: id,

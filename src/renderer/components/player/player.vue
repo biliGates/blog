@@ -66,6 +66,7 @@
             left 200px
             transform-origin top left
             transform rotate(-20deg)
+            transition all .3s 0s
             .brush-pic
               width 100px
               height 130px
@@ -78,6 +79,7 @@
             box-shadow 0 0 4px rgba(100, 100, 100, 0.2)
             background url("./disc.png") no-repeat -11px -11px / 301px 301px
             animation rotation 20000ms linear both infinite
+            animation-play-state paused
             .pic
               display block 
               margin 45px auto
@@ -86,15 +88,9 @@
               height 188px
           &.rotate
             .brush
-              transition all .3s 0s
               transform rotate(0deg)
             .bg
               animation-play-state running
-          &.stop
-            .brush
-              transition all .3s 500ms
-            .bg
-              animation-play-state paused
         .control
           width 300px
           margin 0 auto
@@ -181,7 +177,7 @@
       <div class="player-wrapper">
         <div class="album-info">
           <!-- 专辑封面 -->
-          <div class="album-pic" :class="rotate">
+          <div class="album-pic" :class="{'rotate' : albumRotate}">
             <div class="bg">
               <img class ="pic" :src="songInfo.album_500_500 || songInfo.pic_big">
             </div>
@@ -259,6 +255,7 @@
         lrc: null,
         onScroll: false,
         showLrc: false,
+        albumRotate: false,
         highLightLrc: -1
       }
     },
@@ -277,6 +274,7 @@
     },
     updated () {
       this.$refs.scroll && this.$refs.scroll.refresh()
+      this.playing && this._albumRotate(false)
     },
     methods: {
       _activeLrc () {
@@ -312,6 +310,15 @@
       _lrc () {
         this.lrc = this.songLrc.lrcContent ? lrc(this.songLrc.lrcContent) : null
       },
+      _albumRotate (flag) {
+        if (this.albumRotate || flag) {
+          setTimeout(() => {
+            this.albumRotate = false
+          }, 800)
+        } else {
+          this.albumRotate = true
+        }
+      },
       ...mapMutations([
         'TOGGLE_PLAYER',
         'PLAYING'
@@ -321,12 +328,13 @@
       ...mapGetters([
         'showPlayer',
         'playing'
-      ]),
-      rotate () {
-        return this.playing ? 'rotate' : 'stop'
-      }
+      ])
     },
     watch: {
+      playing () {
+        console.log('rotate')
+        this._albumRotate()
+      },
       songLrc () {
         this._lrc()
       },

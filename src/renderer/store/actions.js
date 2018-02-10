@@ -107,3 +107,20 @@ export const setPlayMode = function ({commit, state}) {
   }
   commit(types.SET_PLAY_MODE, mode)
 }
+
+export const radioSongEnd = function ({commit, state}, song) {
+  let oldSongList = state.historySongList.slice()
+  let flag = true
+  oldSongList.forEach((oldSong) => {
+    if (oldSong.song_id === song.song_id) {
+      flag = false
+    }
+  })
+  if (flag) {
+    oldSongList.push(song)
+    commit(types.SET_HISTORY_SONG_LIST, oldSongList)
+  } else {
+    console.log('历史记录中已有这首歌')
+  }
+  commit(types.NEED_PREV_SONG, true)
+}

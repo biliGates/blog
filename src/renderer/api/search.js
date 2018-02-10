@@ -1,7 +1,7 @@
 import {URL, COMMON_PARAMS} from './config'
 import jsonp from '@/common/js/jsonp'
 
-export const searchSuggest = (word) => {
+export function searchSuggest (word) {
   let params = Object.assign({}, COMMON_PARAMS, {
     query: word,
     method: 'baidu.ting.search.suggestion'
@@ -9,7 +9,7 @@ export const searchSuggest = (word) => {
   return jsonp(URL, params)
 }
 
-export const search = (word, page = 1, pageSize = 30) => {
+export function search (word, page = 1, pageSize = 30) {
   let params = Object.assign({}, COMMON_PARAMS, {
     method: 'baidu.ting.search.common',
     query: word,

@@ -1,12 +1,26 @@
 <style lang="stylus" scoped>
+  @keyframes fm-mode
+    0%
+      max-width 160px
+    100%
+      max-width 100px
   .player-control
     display flex
     position relative
     .music-control, .progress-control, .volume-control, .other-control
       display flex
     .music-control
-      flex 0 0 200px
-      div
+      flex 0 0 160px
+      margin-left 20px
+      &.fm-mode
+        animation fm-mode 700ms
+        animation-fill-mode both
+        .prev
+          opacity 0
+          display none
+      .prev
+        transition all 1s 300ms
+      .prev, .toggle, .next
         flex 1
         i 
           display block 
@@ -98,10 +112,16 @@
 
     <mini-player :timer="playTime" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
 
-    <div class="music-control">
-      <div class="prev" @click="prevSong"><i class="icon-previous"></i></div>
-      <div class="toggle" @click="_togglePlay"><i :class="playIconCls"></i></div>
-      <div class="next" @click="nextSong"><i class="icon-next"></i></div>
+    <div class="music-control" :class="{'fm-mode': radioStationMode}">
+      <div class="prev" @click="prev">
+        <i class="icon-previous"></i>
+      </div>
+      <div class="toggle" @click="_togglePlay">
+        <i :class="playIconCls"></i>
+      </div>
+      <div class="next" @click="next">
+        <i class="icon-next"></i>
+      </div>
     </div>
 
     <div class="progress-control">
@@ -112,6 +132,7 @@
                       :progressBarTo="progressBarTo"
                       :playTime="playTime"
                       :allTime="allTime"
+                      ref="progressBar"
         ></progress-bar>
       </div>
     </div>
@@ -141,9 +162,9 @@
 </template>
 
 <script>
-  import ProgressBar from '@/base/progress-bar/progress-bar'
   import MiniPlayer from '@/components/mini-player/mini-player'
   import PlayerList from '@/components/player-list/player-list'
+  import ProgressBar from '@/base/progress-bar/progress-bar'
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {PLAY_MODE} from '@/common/js/vuex.config'
   import {getSong, getLrc} from '@/api/song'
@@ -198,16 +219,24 @@
         this.prevSong()
       },
       next () {
-        this.nextSong()
+        if (this.radioStationMode) {
+          this.NEED_PREV_SONG(true)
+        } else {
+          this.nextSong()
+        }
       },
       canplay () {
         this.canPlay = true
         this.currentTime()
       },
       ended () {
-        this.historySongList(this.playingSong)
         this.canPlay = false
-        this.next()
+        if (this.radioStationMode) {
+          this.radioSongEnd(this.songInfo)
+        } else {
+          this.historySongList(this.playingSong)
+          this.next()
+        }
       },
       // 调整音量
       volume () {
@@ -249,28 +278,35 @@
         this.PLAYING()
       },
       // 获取音乐
-      _getSong () {
-        getSong(this.playingSongId).then((res) => {
+      _getSong (song) {
+        getSong(song.song_id || song.songid).then((res) => {
+          console.log(res.error_code)
           if (res.error_code === ERR_OK) {
             this.songUrl = res.bitrate.show_link
             this.songInfo = res.songinfo
+          } else if (res.error_code === 22469) {
+            console.log('付费音乐')
+          } else {
+            console.log(res)
           }
         })
       },
-      _getLrc () {
-        getLrc(this.playingSongId).then((res) => {
+      _getLrc (song) {
+        getLrc(song.song_id).then((res) => {
           this.songLrc = res
         })
       },
       ...mapMutations([
         'TOGGLE_SHOW_PLAYER',
-        'PLAYING'
+        'PLAYING',
+        'NEED_PREV_SONG'
       ]),
       ...mapActions([
         'prevSong',
         'nextSong',
         'setPlayMode',
-        'historySongList'
+        'historySongList',
+        'radioSongEnd'
       ])
     },
     computed: {
@@ -287,15 +323,6 @@
       loop () {
         return this.playMode === PLAY_MODE.loop
       },
-      ...mapGetters([
-        'songAmount',
-        'songList',
-        'showPlayer',
-        'playingSongId',
-        'playing',
-        'playingSong',
-        'playMode'
-      ]),
       playModeIconCls () {
         let mode = this.playMode
         return {
@@ -306,15 +333,39 @@
       },
       playIconCls () {
         return this.playing ? 'icon-pause-' : 'icon-play'
-      }
+      },
+      ...mapGetters([
+        'songAmount',
+        'songList',
+        'showPlayer',
+        'playingSongId',
+        'playing',
+        'playingSong',
+        'playMode',
+        'radioStationSong',
+        'radioStationMode',
+        'radioStationChennel'
+      ])
     },
     watch: {
       playingSong () {
-        this._getSong()
-        this._getLrc()
+        this._getSong(this.playingSong)
+        this._getLrc(this.playingSong)
       },
       playing () {
         this.togglePlay()
+      },
+      radioStationSong () {
+        if (this.radioStationMode) {
+          this._getSong(this.radioStationSong)
+          this._getLrc(this.radioStationSong)
+          !this.playing && this.PLAYING()
+        }
+      },
+      radioStationMode () {
+        setTimeout(() => {
+          this.$refs.progressBar.initProgress()
+        }, 1000)
       }
     },
     components: {

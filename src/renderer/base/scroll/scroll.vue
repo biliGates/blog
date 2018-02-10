@@ -72,7 +72,6 @@
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this._getHeight()
-        console.log(1)
       }, 20)
     },
     // 页面激活时监听resize事件
@@ -105,8 +104,10 @@
       },
       // 获取高度
       _getHeight () {
-        this.scrollHeight = this.$refs.scroll.clientHeight
-        this.wrapperHeight = this.$refs.wrapper.clientHeight
+        if (this.$refs.scroll) {
+          this.scrollHeight = this.$refs.scroll.clientHeight
+          this.wrapperHeight = this.$refs.wrapper.clientHeight
+        }
       },
       // 鼠标拖动事件
       _scrolling (e) {
@@ -122,7 +123,7 @@
             ? (_top + step > 1 ? 1 : _top + step)
             : (_top + step < 0 ? 0 : _top + step)
         }
-        function moveEnd () {
+        let moveEnd = () => {
           this.scrollEnd()
           document.removeEventListener('mousemove', moveStart)
           document.removeEventListener('mouseup', moveEnd)

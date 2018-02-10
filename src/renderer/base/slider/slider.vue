@@ -141,7 +141,7 @@
     <div class="img-list":class="{'run': run}">
       <div v-for="i in 6"
            :class="'ch' + i"
-           @click="sliderOnClick(_imgs[i].data)"
+           @click="sliderOnClick(i)"
            ref="sliderChild"
       >
         <img :src="_imgs[i].img" :data="i" class="img">
@@ -185,8 +185,9 @@
       this._stopAnimated()
     },
     methods: {
-      sliderOnClick (data) {
-        this.$emit('sliderOnClick', data)
+      sliderOnClick (index) {
+        let chennel = this._imgs[index]
+        this.$emit('sliderOnClick', chennel.data, chennel.name)
       },
       // 开始动画
       _startAnimated () {

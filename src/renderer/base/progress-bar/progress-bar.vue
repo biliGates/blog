@@ -10,8 +10,10 @@
       margin-top 5px
     .start-time
       text-align left 
+      margin-right 10px
     .end-time
       text-align right
+      margin-left 10px
     .bar-wrapper
       flex 1
       margin-top 3px
@@ -98,17 +100,14 @@
         default: false
       }
     },
-    created () {
-    },
     mounted () {
       this.$nextTick(() => {
-        this._initProgress()
+        this.initProgress()
         this._moveTo()
       })
     },
     methods: {
-      _initProgress () {
-        /* 保存需要用到的总宽度 */
+      initProgress () {
         this.allWidth = this.$refs.progressBar.clientWidth
       },
       _progressBallMove (e) {
