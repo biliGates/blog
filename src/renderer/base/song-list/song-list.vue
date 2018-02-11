@@ -142,7 +142,7 @@ em
       <div class="player-all" @click="playerAll">全部播放<i class="icon-list"></i></div>
     </div>
     <!-- 歌曲部分 -->
-    <div class="song"v-for="(song, index) in songList" @click="playSong(song)">
+    <div class="song"v-for="(song, index) in songList" @click="setPlayingSong(song)">
       <!-- 序号 -->
       <div class="count" :class="{'playing': playIconCls === song.song_id && playing}">
         <div class="sort-num">{{_toTwo(index)}}</div>
@@ -215,7 +215,7 @@ em
           this.setSongList(this.songList)
         }
       },
-      playSong (song) {
+      setPlayingSong (song) {
         this.radioStationMode && this.SET_RADIO_STATION_MODE(false)
         if (!this.getSong) {
           this.playingSong(song)

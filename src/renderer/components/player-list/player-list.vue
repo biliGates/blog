@@ -173,7 +173,7 @@
           </div>
           <div class="operation">
             <div class="song-amount">总{{(songList && songList.length) || 0}}首</div>
-            <div class="favorite" v-show="songList.length">
+            <div class="favorite" v-show="songList.length" @click="favoriteAll">
               <i class="icon-star"></i>收藏全部</div>
             <div class="delect" v-show="songList.length" @click="_delectAllSongs">清空</div>
           </div>
@@ -223,11 +223,9 @@
       play (song) {
         this.playingSong(song)
       },
-      _delectAllSongs () {
-        this.delectAllSongs()
-      },
-      _delectSong (songId) {
-        this.delectSong(songId)
+      favoriteAll () {
+        let list = this.songListType === SONG_LIST_TYPE.current ? this.songList : this.historySongList
+        this.setFavoriteSongList(list)
       },
       showSongList () {
         this.songListType !== SONG_LIST_TYPE.current &&
@@ -239,6 +237,12 @@
           this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.history)
         this.$refs.scroll.topTo(0)
       },
+      _delectAllSongs () {
+        this.delectAllSongs()
+      },
+      _delectSong (songId) {
+        this.delectSong(songId)
+      },
       _icon (text) {
         return icons(text)
       },
@@ -248,6 +252,7 @@
       ...mapActions([
         'playingSong',
         'delectSong',
+        'setFavoriteSongList',
         'delectAllSongs'
       ])
     },

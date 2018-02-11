@@ -44,10 +44,8 @@
         keys: []
       }
     },
-    created () {
-      this._sortSongList()
-    },
     activated () {
+      this._sortSongList()
       this.autoRefresh()
     },
     deactivated () {

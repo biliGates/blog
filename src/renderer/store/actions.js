@@ -133,6 +133,7 @@ export const setFavoriteSongList = function ({commit, state}, list) {
   let flag = true
   if (Array.isArray(list)) {
     list.forEach((song) => {
+      let flag = true
       favoriteSongList.forEach((oldSong) => {
         if (oldSong.song_id === song.song_id) {
           flag = false

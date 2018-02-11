@@ -30,7 +30,6 @@ export default function getFormatTime (timestamp) {
   let now = getTime()
   let today = getTodayTime()
   let timer = (now - timestamp) / 1000
-  console.log(timer)
   let tip = ''
   if (timer <= 0) {
     tip = '刚刚'
