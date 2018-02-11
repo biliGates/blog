@@ -190,7 +190,7 @@
                 <div class="song">
                   <div class="playing-icon">
                     <i class="icon-close-" @click.stop="_delectSong(song.song_id)"></i>
-                    <i :class="{'icon-pause-' : playingIcon === song.song_id}"></i>
+                    <i :class="{'icon-pause-' : playingIcon === song.song_id && playing}"></i>
                   </div>
                   <div class="song-name">{{song.title}}</div>
                   <div class="icon" v-for="icon in _icon(song.biaoshi)">{{icon}}</div>
@@ -256,7 +256,8 @@
         'songList',
         'playingSongId',
         'historySongList',
-        'songListType'
+        'songListType',
+        'playing'
       ]),
       playingIcon () {
         return this.playingSongId

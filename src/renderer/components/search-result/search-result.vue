@@ -114,6 +114,9 @@
         }
       }
     },
+    created () {
+      this._search()
+    },
     updated () {
       this.$refs.scroll.refresh()
     },

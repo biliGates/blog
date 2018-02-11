@@ -4,6 +4,11 @@
       max-width 160px
     100%
       max-width 100px
+  @keyframes music-mode
+    0%
+      max-width 100px
+    100%
+      max-width 160px
   .player-control
     display flex
     position relative
@@ -18,6 +23,11 @@
         .prev
           opacity 0
           display none
+      &.music-mode
+        animation music-mode 700ms
+        animation-fill-mode both
+        .prev
+          opacity 1
       .prev
         transition all 1s 300ms
       .prev, .toggle, .next
@@ -106,13 +116,12 @@
              :loop="loop"
              @ended="ended"
              @canplay="canplay"
-             autoplay
       ></audio>
     </div>
 
     <mini-player :timer="playTime" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
 
-    <div class="music-control" :class="{'fm-mode': radioStationMode}">
+    <div class="music-control" :class="radioStationMode ? 'fm-mode' : 'music-mode'">
       <div class="prev" @click="prev">
         <i class="icon-previous"></i>
       </div>
@@ -142,7 +151,7 @@
       <div class="progress-wrapper">
         <progress-bar @moveEnd="volumeProgressMoveEnd"
                       :hideBall="true"
-                      :progressBarTo="vol" 
+                      :progressBarTo="volProgressTo" 
         ></progress-bar>
       </div>
     </div>
@@ -174,9 +183,9 @@
     data () {
       return {
         progressBarTo: 0,
-        vol: 10,
         song: this.$store.state.playSong,
         songInfo: null,
+        volProgressTo: 0,
         songUrl: null,
         songLrc: null,
         showPlayList: false,
@@ -187,10 +196,11 @@
     created () {
       // 外部点击时隐藏播放列表
       document.addEventListener('click', this.hidePlayList, false)
+      this.vol = this.volume
     },
     mounted () {
       this.$nextTick(() => {
-        this.volume()
+        this.setVolume()
       })
     },
     methods: {
@@ -227,10 +237,10 @@
       },
       canplay () {
         this.canPlay = true
+        this.playing && this.togglePlay()
         this.currentTime()
       },
       ended () {
-        this.canPlay = false
         if (this.radioStationMode) {
           this.radioSongEnd(this.songInfo)
         } else {
@@ -239,8 +249,11 @@
         }
       },
       // 调整音量
-      volume () {
-        this.$refs.audio.volume = this.vol / 100
+      setVolume () {
+        console.log(this.$refs.audio)
+        console.log(this.volume)
+        this.$refs.audio.volume = this.volume / 100
+        this.volProgressTo = this.volume
       },
       // 当鼠标点下时，让进度条不能移动
       progressMoveStart () {
@@ -257,8 +270,7 @@
       },
       // 响应子组件的滚动条拖动事件调整声音
       volumeProgressMoveEnd (movePercentage) {
-        this.vol = movePercentage
-        this.volume()
+        this.SET_VOLUME(movePercentage)
       },
       // 外部点击时隐藏播放列表方法
       hidePlayList (e) {
@@ -299,7 +311,8 @@
       ...mapMutations([
         'TOGGLE_SHOW_PLAYER',
         'PLAYING',
-        'NEED_PREV_SONG'
+        'NEED_PREV_SONG',
+        'SET_VOLUME'
       ]),
       ...mapActions([
         'prevSong',
@@ -341,6 +354,7 @@
         'playingSongId',
         'playing',
         'playingSong',
+        'volume',
         'playMode',
         'radioStationSong',
         'radioStationMode',
@@ -366,6 +380,9 @@
         setTimeout(() => {
           this.$refs.progressBar.initProgress()
         }, 1000)
+      },
+      volume () {
+        this.setVolume()
       }
     },
     components: {

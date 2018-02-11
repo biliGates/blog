@@ -100,6 +100,14 @@
         default: false
       }
     },
+    created () {
+      window.addEventListener('resize', () => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.initProgress()
+        }, 100)
+      })
+    },
     mounted () {
       this.$nextTick(() => {
         this.initProgress()

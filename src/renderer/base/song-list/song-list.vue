@@ -16,9 +16,7 @@
       .album-name
         flex 2
       .operation, .player-all
-        flex 0 100px
-
-
+        flex 0 90px
     .song-list-header
       background rgba(200, 200, 200, 0.1)
       border-bottom 1px solid rgba(7, 17, 27, 0.1)
@@ -34,10 +32,11 @@
         &:active
           box-shadow 0 0 4px rgba(7, 17, 27, 0.1)
       .player-all
+        padding 0
+        text-align center
         i
           font-size 12px
           margin-left 4px
-
     .song
       transition all .2s
       color #888
@@ -58,7 +57,6 @@
             height 15px 
             width 15px
             background url("./player.gif") no-repeat 0 0 / 15px 15px
-          
         .sort-num
           font-size 14px
           margin-left 6px
@@ -97,31 +95,34 @@
           text-shadow 0 0 1px rgba(220, 45, 45, 0.5) 
           box-shadow 0 0 1px rgba(220, 45, 45, 0.7)
       .operation
-        padding-left 20px
-        box-sizing border-box
-        i 
-          width 20px
-          display inline-block
-          color #ccc
-          text-shadow 0 0 2px rgba(7, 17, 27, 0.1)
-          transition all .3s
-          padding 5px 3px
-          text-align center
-          &.icon-star
-            &:hover
-              color rgb(220, 45, 45)
-          &.icon-pause-, &.icon-play
-            font-size 18px
-            &:hover
+        .wrapper
+          display flex
+          width 60px
+          margin 0 auto
+          i 
+            flex 1
+            width 20px
+            height 34px
+            line-height 34px
+            color #ccc
+            text-shadow 0 0 2px rgba(7, 17, 27, 0.1)
+            transition all .3s
+            text-align center
+            &.icon-star
+              &:hover
+                color rgb(220, 45, 45)
+            &.icon-pause-, &.icon-play
+              font-size 18px
+              &:hover
+                &:before
+                  color #444
+            &.icon-pause-
               &:before
-                color #444
-          &.icon-pause-
-            &:before
-              color #ccc
-              font-weight 700
-          &.icon-play
-            &:before
-              margin-left 1px
+                color #ccc
+                font-weight 700
+            &.icon-play
+              &:before
+                margin-left 1px
 </style>
 <style lang="stylus">
 em
@@ -133,7 +134,7 @@ em
 <template>
   <div class="song-list">
     <!-- 表格头 -->
-    <div class="song-list-header">
+    <div class="song-list-header" v-if="needTabBar">
       <span class="count"></span>
       <div class="song-name">歌曲名</div>
       <div class="singer">歌手</div>
@@ -141,9 +142,9 @@ em
       <div class="player-all" @click="playerAll">全部播放<i class="icon-list"></i></div>
     </div>
     <!-- 歌曲部分 -->
-    <div class="song"v-for="(song, index) in songList" @click="playing(song)">
+    <div class="song"v-for="(song, index) in songList" @click="playSong(song)">
       <!-- 序号 -->
-      <div class="count" :class="{'playing': playIconCls === song.song_id}">
+      <div class="count" :class="{'playing': playIconCls === song.song_id && playing}">
         <div class="sort-num">{{_toTwo(index)}}</div>
         <i class="icon"></i>
       </div>
@@ -156,11 +157,12 @@ em
       <div class="album-name" v-html="song.album_title"></div>
       <!-- 操作按纽 -->
       <div class="operation">
-        <i :class="playIconCls === song.song_id ? 'icon-pause-' : 'icon-play'"
-        ></i>
-        <i class="icon-star" @click="favorite(song, index)"></i>
+        <div class="wrapper">
+          <i :class="playIconCls === song.song_id && playing ? 'icon-pause-' : 'icon-play'"
+          ></i>
+          <i v-show="needTabBar" class="icon-star" @click="favorite(song, index)"></i>
+        </div>
       </div>
-
     </div>  
 
   </div>
@@ -185,6 +187,10 @@ em
       getSong: {
         typs: Function,
         default: null
+      },
+      needTabBar: {
+        type: Boolean,
+        default: true
       }
     },
     updated () {
@@ -192,6 +198,7 @@ em
     },
     methods: {
       playerAll () {
+        this.radioStationMode && this.SET_RADIO_STATION_MODE(false)
         if (this.getSong) {
           let songList = []
           this.songList.forEach((song, index) => {
@@ -200,7 +207,6 @@ em
               if (songList.length === this.songList.length) {
                 this.setSongList(songList)
               } else if (index === this.songList.length) {
-                console.log(index)
                 this.setSongList(songList)
               }
             })
@@ -209,7 +215,8 @@ em
           this.setSongList(this.songList)
         }
       },
-      playing (song) {
+      playSong (song) {
+        this.radioStationMode && this.SET_RADIO_STATION_MODE(false)
         if (!this.getSong) {
           this.playingSong(song)
         } else {
@@ -232,12 +239,15 @@ em
         setSongList: 'songList'
       }),
       ...mapMutations([
-        'PLAYING'
+        'PLAYING',
+        'SET_RADIO_STATION_MODE'
       ])
     },
     computed: {
       ...mapGetters([
-        'playingSongId'
+        'playingSongId',
+        'radioStationMode',
+        'playing'
       ]),
       playIconCls () {
         return this.playingSongId

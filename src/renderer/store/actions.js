@@ -1,6 +1,7 @@
 import * as types from './mutation-type'
 import {SONG_LIST_TYPE, PLAY_MODE} from '@/common/js/vuex.config'
 import {SUFFLE_LIST} from '@/common/js/suffle-list'
+import {getLocalStorage, setLocalStorage} from '@/common/js/storage'
 
 export const playingSong = function ({commit, state}, song) {
   let flag = true
@@ -65,7 +66,9 @@ export const songList = function ({commit, state}, list) {
   list.forEach(newSong => {
     let flag = true
     songList.forEach(oldSong => {
-      if (oldSong.song_id === newSong.song_id) flag = false
+      if (oldSong.song_id === newSong.song_id) {
+        flag = false
+      }
     })
     flag && songList.push(newSong)
   })
@@ -123,4 +126,58 @@ export const radioSongEnd = function ({commit, state}, song) {
     console.log('历史记录中已有这首歌')
   }
   commit(types.NEED_PREV_SONG, true)
+}
+
+export const setFavoriteSongList = function ({commit, state}, list) {
+  let favoriteSongList = state.favoriteSongList.slice()
+  let flag = true
+  if (Array.isArray(list)) {
+    list.forEach((song) => {
+      favoriteSongList.forEach((oldSong) => {
+        if (oldSong.song_id === song.song_id) {
+          flag = false
+        }
+      })
+      song.favoriteTime = Number(new Date())
+      flag && favoriteSongList.push(song)
+    })
+    commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
+  } else {
+    favoriteSongList.forEach((oldSong) => {
+      if (oldSong.song_id === list.song_id) {
+        flag = false
+      }
+    })
+    if (flag) {
+      favoriteSongList.push(list)
+      list.favoriteTime = Number(new Date())
+      commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
+    } else {
+      console.log('已经收藏了这首歌')
+    }
+  }
+}
+
+export const loadLocalStorage = function ({commit}) {
+  let songList = getLocalStorage.getSongList()
+  let historySongList = getLocalStorage.getHistorySongList()
+  let favoriteSongList = getLocalStorage.getFavoriteSongList()
+  let playingSongIndex = getLocalStorage.getPlayingSongIndex()
+  let volume = getLocalStorage.getVolume()
+  let mode = getLocalStorage.getPlayMode()
+  songList && commit(types.SET_SONG_LIST, songList)
+  historySongList && commit(types.SET_HISTORY_SONG_LIST, historySongList)
+  favoriteSongList && commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
+  playingSongIndex && commit(types.SET_PLAY_SONG_INDEX, playingSongIndex)
+  volume && commit(types.SET_VOLUME, volume)
+  mode && commit(types.SET_PLAY_MODE, mode)
+}
+
+export const writeLocalStorage = function ({state}) {
+  setLocalStorage.setSongList(state.songList)
+  setLocalStorage.setHistorySongList(state.historySongList)
+  setLocalStorage.setFavoriteSongList(state.favoriteSongList)
+  setLocalStorage.setPlayingSongIndex(state.playingSongIndex)
+  setLocalStorage.setVolume(state.volume)
+  setLocalStorage.setPlayMode(state.playMode)
 }

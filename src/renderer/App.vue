@@ -38,9 +38,9 @@
 </template>
 
 <script>
-  import TabBar from '@/components/tab-bar/tab-bar'
-  import VContent from '@/components/content/content'
   import PlayerControl from '@/components/player-control/player-control'
+  import VContent from '@/components/content/content'
+  import TabBar from '@/components/tab-bar/tab-bar'
   
   export default {
     components: {

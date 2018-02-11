@@ -198,10 +198,10 @@
 </template>
 
 <script>
-  import {ipcRenderer} from 'electron'
-  import {searchSuggest} from '@/api/search'
   import SearchResult from '@/components/search-result/search-result'
-  import {mapMutations} from 'vuex'
+  import {searchSuggest} from '@/api/search'
+  import {mapMutations, mapActions} from 'vuex'
+  import {ipcRenderer} from 'electron'
 
   export default {
     data () {
@@ -209,6 +209,11 @@
         suggests: [],
         userInput: ''
       }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        this.loadLocalStorage()
+      })
     },
     methods: {
       // 与主进程通信，实现关闭、最大化、最小化
@@ -219,7 +224,10 @@
         ipcRenderer.send('window-maximize')
       },
       closeTheWindow () {
-        ipcRenderer.send('window-close')
+        this.writeLocalStorage()
+        setTimeout(() => {
+          ipcRenderer.send('window-close')
+        }, 2000)
       },
       // 获取搜索建议
       _getSearchSuggest (word) {
@@ -234,6 +242,10 @@
         this.$router.push(`/search-result/${word}`)
         this.suggests = []
       },
+      ...mapActions([
+        'loadLocalStorage',
+        'writeLocalStorage'
+      ]),
       ...mapMutations([
         'TOGGLE_PLAYER'
       ])
@@ -255,5 +267,3 @@
     }
   }
 </script>
-
-

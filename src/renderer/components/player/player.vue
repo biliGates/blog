@@ -187,7 +187,7 @@
           </div>
           <!-- 操作按钮 -->
           <div class="control">
-            <div class="favorite">
+            <div class="favorite" @click="favorite">
               <i class="icon-star"></i>
               收藏
             </div>
@@ -247,7 +247,7 @@
   import CloseButton from '@/base/close-button/close-button'
   import Scroll from '@/base/scroll/scroll'
   import lrc from '@/common/js/lrc'
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
 
   export default {
     data () {
@@ -277,6 +277,9 @@
       this.playing && this._albumRotate(false)
     },
     methods: {
+      favorite () {
+        this.setFavoriteSongList(this.songInfo)
+      },
       _activeLrc () {
         let keys = this.lrc.keys
         let playingTime = this.timer
@@ -322,6 +325,9 @@
       ...mapMutations([
         'TOGGLE_PLAYER',
         'PLAYING'
+      ]),
+      ...mapActions([
+        'setFavoriteSongList'
       ])
     },
     computed: {
@@ -332,7 +338,6 @@
     },
     watch: {
       playing () {
-        console.log('rotate')
         this._albumRotate()
       },
       songLrc () {

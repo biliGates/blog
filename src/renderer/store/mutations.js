@@ -39,6 +39,12 @@ const mutations = {
   },
   [types.NEED_PREV_SONG] (state, flag) {
     state.needPrevSong = flag
+  },
+  [types.SET_FAVORITE_SONG_LIST] (state, list) {
+    state.favoriteSongList = list
+  },
+  [types.SET_VOLUME] (state, vol) {
+    state.volume = vol
   }
 }
 

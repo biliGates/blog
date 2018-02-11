@@ -32,3 +32,7 @@ export const radioStationMode = state => state.radioStationMode
 export const radioStationChennel = state => state.radioStationChennel
 
 export const needPrevSong = state => state.needPrevSong
+
+export const favoriteSongList = state => state.favoriteSongList
+
+export const volume = state => state.volume

@@ -11,21 +11,8 @@ export const collatingText = (text) => {
   return text
 }
 
-export const objLength = (obj) => {
-  let len = 0
-  /* eslint-disable */
-  for (let i in obj) {
-    len++
-  }
-  return len
-}
-
 export const toTwo = (n) => {
-  return n < 10
-    ? (n <= 0
-      ? '00' 
-      : `0${n}`)
-    : `${n}`
+  return n < 10 ? (n <= 0 ? '00' : `0${n}`) : `${n}`
 }
 
 export const getTime = (time) => {
