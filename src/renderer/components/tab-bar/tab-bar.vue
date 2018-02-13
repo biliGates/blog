@@ -224,10 +224,9 @@
         ipcRenderer.send('window-maximize')
       },
       closeTheWindow () {
-        this.writeLocalStorage()
-        setTimeout(() => {
-          ipcRenderer.send('window-close')
-        }, 2000)
+        Promise.resolve(this.writeLocalStorage)
+          .then(ipcRenderer.send('window-hide'))
+          .then(ipcRenderer.send('window-close'))
       },
       // 获取搜索建议
       _getSearchSuggest (word) {

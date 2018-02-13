@@ -57,11 +57,8 @@
 <template>
   <div class="progress-bar">
     <div class="start-time" v-if="needTimer">{{formatPlayTime}}</div>
-    <div class="bar-wrapper"  @mousedown="_progressBallMove">
-      <div class="bar" 
-          :class="{'hide-ball': hideBall}" 
-          ref="progressBar" 
-      >
+    <div class="bar-wrapper" ref="progressBar" @mousedown="_progressBallMove">
+      <div class="bar" :class="{'hide-ball': hideBall}">
         <div class="progress" :style="{'width': progressWidth}">
           <div class="progress-ball"></div>
         </div>
@@ -119,30 +116,32 @@
         this.allWidth = this.$refs.progressBar.clientWidth
       },
       _progressBallMove (e) {
-        /* 父级右边距 */
         this.$emit('progressOnClick')
+        // 父级右边距
         let offsetLeft = this.$refs.progressBar.offsetLeft
-        /* 鼠标单次点击也应有效 */
-        this.moveTo = this._computedUpper(e.clientX - offsetLeft, this.allWidth, 0)
+        // 鼠标单次点击也应有效
+        let moveDistance = (e.clientX - offsetLeft) / this.allWidth * 100
+        this.moveTo = this._computedUpper(moveDistance, 100, 0)
         let progressBarMove = (e) => {
-          this.moveTo = this._computedUpper(e.clientX - offsetLeft, this.allWidth, 0)
+          let moveDistance = (e.clientX - offsetLeft) / this.allWidth * 100
+          this.moveTo = this._computedUpper(moveDistance, 100, 0)
         }
         let progressBarUp = () => {
-          /* 移除事件 */
+          // 移除事件
           document.removeEventListener('mousemove', progressBarMove)
           document.removeEventListener('mouseup', progressBarUp)
           /* 向父组件广播，传递参数为移动距离的百分比 */
-          this.$emit('moveEnd', Math.floor(this.moveTo / this.allWidth * 100))
+          this.$emit('moveEnd', this.moveTo)
         }
-        /* 绑定事件 */
+        // 绑定事件
         document.addEventListener('mousemove', progressBarMove, false)
         document.addEventListener('mouseup', progressBarUp, false)
       },
-      /* 解析父级传递过来的百分比参数 */
+      // 对父级传过来的参数进行上下限处理
       _moveTo () {
-        this.moveTo = this.progressBarTo / 100 * this.allWidth
+        this.moveTo = this._computedUpper(this.progressBarTo, 100, 0)
       },
-      /* 判断移动距离的上下限 */
+      // 判断移动距离的上下限
       _computedUpper (moveDistance, upper, floor) {
         return (moveDistance > upper || moveDistance < floor
           ? (moveDistance > upper ? upper : floor)
@@ -156,7 +155,7 @@
     },
     computed: {
       progressWidth () {
-        return `${this.moveTo}px`
+        return `${this.moveTo}%`
       },
       formatAllTime () {
         return getTime(this.allTime)
