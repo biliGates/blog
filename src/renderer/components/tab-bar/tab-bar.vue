@@ -224,7 +224,7 @@
         ipcRenderer.send('window-maximize')
       },
       closeTheWindow () {
-        Promise.resolve(this.writeLocalStorage)
+        Promise.resolve(this.writeLocalStorage())
           .then(ipcRenderer.send('window-hide'))
           .then(ipcRenderer.send('window-close'))
       },

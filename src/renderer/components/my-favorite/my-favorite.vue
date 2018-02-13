@@ -6,7 +6,6 @@
     .song-list
       .song-item
         margin 0 20px
-        padding-bottom 20px
         .created-time
           margin-bottom 10px
           font-size 13px

@@ -64,15 +64,14 @@
       .progress-wrapper
         width 90%
         margin 15px 0 0 5%
-
     .volume-control
       flex 0 0 170px
       margin-right -20px
       .volume
         line-height 50px
-        margin 3px -16px 0 0
+        margin-top 3px
       .progress-wrapper
-        margin 15px 0 0 20px
+        margin 15px 0 0 10px
         width 110px
     .other-control
       flex 0 0 120px
@@ -250,8 +249,6 @@
       },
       // 调整音量
       setVolume () {
-        console.log(this.$refs.audio)
-        console.log(this.volume)
         this.$refs.audio.volume = this.volume / 100
         this.volProgressTo = this.volume
       },
@@ -264,8 +261,9 @@
         if (this.canPlay) {
           let audio = this.$refs.audio
           let duration = audio.duration
-          this.progressOnMove = false
           audio.currentTime = movePercentage / 100 * duration
+          this.progressOnMove = false
+          audio.pause()
         }
       },
       // 响应子组件的滚动条拖动事件调整声音
@@ -325,7 +323,7 @@
     computed: {
       // 根据音量调整图标
       volumeIcon () {
-        let vol = this.vol
+        let vol = this.volume
         return {
           'icon-volume-mute': vol <= 0,
           'icon-volume-low': vol <= 30 && vol > 0,

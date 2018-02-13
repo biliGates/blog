@@ -24,6 +24,7 @@
         height 6px
         box-shadow 0 0 2px rgba(7, 17, 27, 0.1)
         background #d1d1d1
+        transition all .5s
         .progress
           width 0%
           height 6px
@@ -57,8 +58,8 @@
 <template>
   <div class="progress-bar">
     <div class="start-time" v-if="needTimer">{{formatPlayTime}}</div>
-    <div class="bar-wrapper" ref="progressBar" @mousedown="_progressBallMove">
-      <div class="bar" :class="{'hide-ball': hideBall}">
+    <div class="bar-wrapper" @mousedown="_progressBallMove">
+      <div class="bar" ref="progressBar" :class="{'hide-ball': hideBall}">
         <div class="progress" :style="{'width': progressWidth}">
           <div class="progress-ball"></div>
         </div>
