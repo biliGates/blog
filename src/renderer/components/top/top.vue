@@ -167,6 +167,7 @@
   import Loading from '@/base/loading/loading'
   import {type, getTops} from '@/api/top'
   import {getSong} from '@/api/song'
+  import {mapActions} from 'vuex'
 
   export default {
     data () {
@@ -186,7 +187,7 @@
     },
     methods: {
       play (song) {
-        this.$store.commit('PLAY_SONG', song)
+        this.playingSong(song)
       },
       // 获取排行榜数据
       _getTops () {
@@ -217,7 +218,10 @@
         } else {
           this.showMore = false
         }
-      }
+      },
+      ...mapActions([
+        'playingSong'
+      ])
     },
     components: {
       Scroll,

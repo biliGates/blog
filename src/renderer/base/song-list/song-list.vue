@@ -162,7 +162,7 @@ em
         <div class="wrapper">
           <i :class="playIconCls === song.song_id && playing ? 'icon-pause-' : 'icon-play'"
           ></i>
-            <i :class="{'star': favorited(song)}" class="icon-star" @click.stop="favorite(song)"></i>
+          <i :class="{'star': favorited(song)}" class="icon-star" @click.stop="favorite(song)"></i>
         </div>
       </div>
     </div>  
@@ -231,7 +231,6 @@ em
           this.getSong(song.song_id, this.playingSong)
           this.$emit('onClick')
         }
-        this.PLAYING(true)
       },
       favorited (song) {
         return favorite(this.favoriteSongList, song)

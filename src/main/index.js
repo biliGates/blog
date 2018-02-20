@@ -44,7 +44,6 @@ function createWindow () {
   })
 
   ipcMain.on('window-hide', () => {
-    console.log('OK')
     mainWindow.minimize()
   })
   // ------------------------------------

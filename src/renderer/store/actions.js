@@ -14,20 +14,23 @@ export const playingSong = function ({commit, state}, song) {
       index = i - 1
     }
   })
-  if (flag || !songList) {
+  if (flag) {
+    // 在当前播当的歌后面添加歌曲
+    console.log(1)
     songList.splice(playingSongIndex + 2, 0, song)
     commit(types.SET_SONG_LIST, songList)
+    if (songList.length > 1) {
+      commit(types.SET_PLAY_SONG_INDEX, playingSongIndex + 1)
+    }
     commit(types.PLAYING, true)
   } else {
-    if (songList[playingSongIndex + 1].song_id === song.song_id) {
-      state.playing
-        ? commit(types.PLAYING, false)
-        : commit(types.PLAYING, true)
-    } else {
-      commit(types.SET_PLAY_SONG_INDEX, index)
-      console.log('播放列表中已有这首歌')
-      commit(types.PLAYING, true)
-    }
+    console.log(2)
+    commit(types.SET_PLAY_SONG_INDEX, index)
+    console.log('播放列表中已有这首歌')
+    // 如果当前播放的音乐被点击，就暂停播放
+    playingSongIndex === index && state.playing
+      ? commit(types.PLAYING, false)
+      : commit(types.PLAYING, true)
   }
 }
 
