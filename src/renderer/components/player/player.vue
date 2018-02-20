@@ -119,7 +119,33 @@
               color #fff
             &:active
               transform scale(1.1)
-              
+          .share
+            position relative
+            .share-img
+              display none
+            &:hover
+              .share-img
+                display block
+                position absolute        
+                top -140px
+                left -20px
+                width 120px
+                height 120px
+                box-sizing border-box
+                border-radius 0 5px 5px 0
+                opacity .9
+                background #f1f1f1
+                box-shadow 5px 5px 10px rgba(7, 17, 27, 0.2)
+                &:after
+                  content ''
+                  position absolute
+                  top 120px
+                  left 30px
+                  border 15px solid #000
+                  border-color #fff transparent transparent transparent
+                .QR-code
+                  width 120px
+                  height 120px
       .song-info
         flex 4
         .song-wrapper
@@ -195,6 +221,9 @@
               收藏
             </div>
             <div class="share">
+              <div class="share-img">
+                <img class="QR-code" src="./share.png">
+              </div>
               <i class="icon-share-"></i>
               分享
             </div>
@@ -318,8 +347,8 @@
       },
       _getLrc (data) {
         getLrc(data.song_id).then((res) => {
-          this.lrc = res.lrcContent ? lrc(res.lrcContent) : null
           this.$refs.scroll && this.$refs.scroll.topTo(0)
+          this.lrc = res.lrcContent ? lrc(res.lrcContent) : null
         })
       },
       _albumRotate (flag) {

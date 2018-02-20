@@ -133,7 +133,6 @@ export const radioSongEnd = function ({commit, state}, song) {
 
 export const setFavoriteSongList = function ({commit, state}, list) {
   let favoriteSongList = state.favoriteSongList.slice()
-  let flag = true
   if (Array.isArray(list)) {
     list.forEach((song) => {
       let flag = true
@@ -147,9 +146,12 @@ export const setFavoriteSongList = function ({commit, state}, list) {
     })
     commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
   } else {
-    favoriteSongList.forEach((oldSong) => {
+    let flag = true
+    let index = 0
+    favoriteSongList.forEach((oldSong, i) => {
       if (oldSong.song_id === list.song_id) {
         flag = false
+        index = i
       }
     })
     if (flag) {
@@ -157,7 +159,8 @@ export const setFavoriteSongList = function ({commit, state}, list) {
       list.favoriteTime = new Date().getTime()
       commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
     } else {
-      console.log('已经收藏了这首歌')
+      favoriteSongList.splice(index, 1)
+      commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
     }
   }
 }

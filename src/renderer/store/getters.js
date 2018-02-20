@@ -23,8 +23,6 @@ export const showPlayer = state => state.showPlayer
 
 export const songAmount = state => state.songList.length
 
-export const topDetail = state => state.topDetail
-
 export const radioStationSong = state => state.radioStationSong
 
 export const radioStationMode = state => state.radioStationMode

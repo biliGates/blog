@@ -233,12 +233,14 @@
         this.playing && this.togglePlay()
       },
       ended () {
+        this.PLAYING(false)
         if (this.radioStationMode) {
           this.radioSongEnd(this.songInfo)
         } else {
           this.historySongList(this.playingSong)
           this.next()
         }
+        this.PLAYING(true)
       },
       // 调整音量
       setVolume () {
