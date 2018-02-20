@@ -187,7 +187,7 @@
           </div>
           <!-- 操作按钮 -->
           <div class="control">
-            <div class="favorite" @click="favorite">
+            <div class="favorite" :class="{'favorited' : favoriteSong}" @click="favorite">
               <i class="icon-star"></i>
               收藏
             </div>
@@ -247,6 +247,7 @@
   import CloseButton from '@/base/close-button/close-button'
   import Scroll from '@/base/scroll/scroll'
   import lrc from '@/common/js/lrc'
+  import {getLrc} from '@/api/song'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
 
   export default {
@@ -264,13 +265,12 @@
         type: Object,
         default: {}
       },
-      songLrc: {
-        type: Object,
-        default: {}
-      },
       timer: {
         default: 0
       }
+    },
+    created () {
+      this._getLrc(this.songInfo)
     },
     updated () {
       this.$refs.scroll && this.$refs.scroll.refresh()
@@ -292,11 +292,14 @@
           }
         })
       },
+      // 歌词滚动算法
       _moveTo (activeLrc) {
+        // 当滚动中和已经添加了active class 时不需要滚动
         if (this.activeLrc === activeLrc || this.onScroll) {
           return
         }
         this.activeLrc = activeLrc
+        // 计算当前歌词相对于总歌词的百分比
         this.$refs.scroll && this.$refs.scroll.topTo((this.$refs.lrcs[activeLrc].offsetTop - 120) / (this.$refs.lrcs[this.$refs.lrcs.length - 1].offsetTop - this.$refs.info.clientHeight - 30))
       },
       _onScroll () {
@@ -309,9 +312,10 @@
       _hidePlayer () {
         this.TOGGLE_PLAYER()
       },
-      // 解析歌词
-      _lrc () {
-        this.lrc = this.songLrc.lrcContent ? lrc(this.songLrc.lrcContent) : null
+      _getLrc (data) {
+        getLrc(data.song_id).then((res) => {
+          this.lrc = res.lrcContent ? lrc(res.lrcContent) : null
+        })
       },
       _albumRotate (flag) {
         if (this.albumRotate || flag) {
@@ -333,18 +337,19 @@
     computed: {
       ...mapGetters([
         'showPlayer',
-        'playing'
+        'playing',
+        'favoriteSong'
       ])
     },
     watch: {
       playing () {
         this._albumRotate()
       },
-      songLrc () {
-        this._lrc()
+      songInfo (data) {
+        this._getLrc(data)
       },
-      showPlayer () {
-        this.showLrc = this.showPlayer
+      showPlayer (date) {
+        this.showLrc = date
       },
       timer () {
         this.showLrc && this.lrc && this._activeLrc()

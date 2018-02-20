@@ -48,7 +48,7 @@
 </style>
 
 <template>
-  <div class="mini-player">
+  <div class="mini-player" v-if="songInfo">
 
     <div @click="_showPlayer">
 
@@ -67,7 +67,7 @@
 
     </div>
 
-    <player :timer="timer" :songLrc="songLrc" :songInfo="songInfo"></player>
+    <player :timer="timer" :songInfo="songInfo"></player>
 
   </div>
 </template>
@@ -82,10 +82,6 @@
         type: Object,
         default: {}
       },
-      songLrc: {
-        type: Object,
-        default: {}
-      },
       timer: {
       }
     },
@@ -97,6 +93,11 @@
       ...mapMutations([
         'TOGGLE_PLAYER'
       ])
+    },
+    watch: {
+      songLrc (a) {
+        console.log(a)
+      }
     },
     components: {
       Player

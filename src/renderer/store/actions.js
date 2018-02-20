@@ -151,7 +151,7 @@ export const setFavoriteSongList = function ({commit, state}, list) {
     })
     if (flag) {
       favoriteSongList.push(list)
-      list.favoriteTime = Number(new Date())
+      list.favoriteTime = Date().now()
       commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
     } else {
       console.log('已经收藏了这首歌')

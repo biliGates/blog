@@ -12,6 +12,9 @@
           color #666
         .list
           border-top 1px solid rgba(7, 17, 27, 0.1)
+          .icon-close-
+            &:before
+              color #666 !important
 </style>
 
 <template>
@@ -22,6 +25,7 @@
           <div class="created-time">{{key}}</div>
           <div class="list">
             <song-list :needTabBar="false" :songList="songList[key]">
+              <i slot="icon" class="icon-close-"></i>
             </song-list>
           </div>
         </li>

@@ -115,10 +115,11 @@
              :loop="loop"
              @ended="ended"
              @canplay="canplay"
+             @timeupdate="timeUpdate"
       ></audio>
     </div>
 
-    <mini-player :timer="playTime" :songLrc="songLrc" :songInfo="songInfo"></mini-player>
+    <mini-player :timer="playTime" :songInfo="songInfo"></mini-player>
 
     <div class="music-control" :class="radioStationMode ? 'fm-mode' : 'music-mode'">
       <div class="prev" @click="prev">
@@ -175,7 +176,7 @@
   import ProgressBar from '@/base/progress-bar/progress-bar'
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {PLAY_MODE} from '@/common/js/vuex.config'
-  import {getSong, getLrc} from '@/api/song'
+  import {getSong} from '@/api/song'
   import {ERR_OK} from '@/api/config'
 
   export default {
@@ -186,7 +187,6 @@
         songInfo: null,
         volProgressTo: 0,
         songUrl: null,
-        songLrc: null,
         showPlayList: false,
         playTime: 0,
         allTime: 0
@@ -196,26 +196,20 @@
       // 外部点击时隐藏播放列表
       document.addEventListener('click', this.hidePlayList, false)
       this.vol = this.volume
-    },
-    mounted () {
       this.$nextTick(() => {
         this.setVolume()
       })
     },
+    mounted () {
+    },
     methods: {
       // 向子组件传递当前时间
-      currentTime () {
-        let audio = this.$refs.audio
-        this.allTime = audio.duration
-        let autoPlay = () => {
-          this.playTime = audio.currentTime
-          // 拖动进度条时不计算
-          if (!this.progressOnMove) {
-            this.progressBarTo = this.playTime / this.allTime * 100
-          }
+      timeUpdate (time) {
+        this.allTime = time.target.duration
+        this.playTime = time.target.currentTime
+        if (!this.progressOnMove) {
+          this.progressBarTo = this.playTime / this.allTime * 100
         }
-        clearInterval(this.timer1)
-        this.timer1 = setInterval(autoPlay, 300)
       },
       // 切换播放暂停
       togglePlay () {
@@ -237,7 +231,6 @@
       canplay () {
         this.canPlay = true
         this.playing && this.togglePlay()
-        this.currentTime()
       },
       ended () {
         if (this.radioStationMode) {
@@ -301,11 +294,6 @@
           }
         })
       },
-      _getLrc (song) {
-        getLrc(song.song_id).then((res) => {
-          this.songLrc = res
-        })
-      },
       ...mapMutations([
         'TOGGLE_SHOW_PLAYER',
         'PLAYING',
@@ -362,7 +350,6 @@
     watch: {
       playingSong () {
         this._getSong(this.playingSong)
-        this._getLrc(this.playingSong)
       },
       playing () {
         this.togglePlay()

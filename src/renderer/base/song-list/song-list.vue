@@ -145,7 +145,7 @@ em
     <div class="song"v-for="(song, index) in songList" @click="setPlayingSong(song)">
       <!-- 序号 -->
       <div class="count" :class="{'playing': playIconCls === song.song_id && playing}">
-        <div class="sort-num">{{_toTwo(index)}}</div>
+        <div class="sort-num">{{_toTwo(index + 1)}}</div>
         <i class="icon"></i>
       </div>
       <!-- 歌曲、歌手、专辑名 -->
@@ -160,7 +160,9 @@ em
         <div class="wrapper">
           <i :class="playIconCls === song.song_id && playing ? 'icon-pause-' : 'icon-play'"
           ></i>
-          <i v-show="needTabBar" class="icon-star" @click="favorite(song, index)"></i>
+          <slot name="icon">
+            <i v-show="needTabBar" class="icon-star" @click="favorite(song, index)"></i>
+          </slot>
         </div>
       </div>
     </div>  
