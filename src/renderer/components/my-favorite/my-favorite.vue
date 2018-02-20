@@ -13,24 +13,33 @@
         .list
           border-top 1px solid rgba(7, 17, 27, 0.1)
           .icon-close-
+            margin-top -1px
             &:before
-              color #666 !important
+              font-size 14px
+              font-weight 1000
+              color #aaa
+  .no-favorite-song
+    font-size 14px
+    margin-top 36%
+    color #888
+    text-align center
 </style>
 
 <template>
   <div class="my-favorite">
-    <scroll class="scroll">
+    <scroll class="scroll" v-if="favoriteSongList.length">
       <ul class="song-list">
         <li class="song-item" v-for="key in keys">
           <div class="created-time">{{key}}</div>
           <div class="list">
-            <song-list :needTabBar="false" :songList="songList[key]">
+            <song-list :needTabBar="false" :delectFn="delectFavoriteSong" :songList="songList[key]">
               <i slot="icon" class="icon-close-"></i>
             </song-list>
           </div>
         </li>
       </ul>
     </scroll>
+    <div class="no-favorite-song" v-else>没有收藏的歌</div>
   </div>
 </template>
 
@@ -44,7 +53,10 @@
     data () {
       return {
         songList: {},
-        keys: []
+        keys: [],
+        delectFavoriteSong: function (e) {
+          console.log(e)
+        }
       }
     },
     activated () {

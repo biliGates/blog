@@ -43,6 +43,8 @@
         line-height 50px
         color #ddd
         transition color .3s
+        &.star
+          color #f14545
         &:hover
           color rgb(220, 45, 45)
 </style>
@@ -62,7 +64,7 @@
       </div>
 
       <div class="favorite">
-        <i class="icon-star"></i>
+        <i class="icon-star" :class="{'star' : favorited}" @click.stop="favorite"></i>
       </div>
 
     </div>
@@ -74,7 +76,8 @@
 
 <script>
   import Player from '@/components/player/player'
-  import {mapMutations} from 'vuex'
+  import favorite from '@/common/js/favorite'
+  import {mapActions, mapMutations, mapGetters} from 'vuex'
 
   export default {
     props: {
@@ -86,13 +89,27 @@
       }
     },
     methods: {
+      favorite () {
+        this.setFavoriteSongList(this.songInfo)
+      },
       // 控制播放器显示隐藏
       _showPlayer () {
         this.TOGGLE_PLAYER()
       },
+      ...mapActions([
+        'setFavoriteSongList'
+      ]),
       ...mapMutations([
         'TOGGLE_PLAYER'
       ])
+    },
+    computed: {
+      ...mapGetters([
+        'favoriteSongList'
+      ]),
+      favorited () {
+        return favorite(this.favoriteSongList, this.songInfo)
+      }
     },
     watch: {
       songLrc (a) {

@@ -151,12 +151,23 @@ export const setFavoriteSongList = function ({commit, state}, list) {
     })
     if (flag) {
       favoriteSongList.push(list)
-      list.favoriteTime = Date().now()
+      list.favoriteTime = new Date().getTime()
       commit(types.SET_FAVORITE_SONG_LIST, favoriteSongList)
     } else {
       console.log('已经收藏了这首歌')
     }
   }
+}
+
+export const delectFavoriteSong = function ({commit, state}, song) {
+  let songList = state.favoriteSongList.slice()
+  let newList = []
+  songList.forEach((favoriteSong) => {
+    if (favoriteSong.song_id !== song.song_id) {
+      newList.push(favoriteSong)
+    }
+  })
+  commit(types.DELECT_FAVORITE_SONG, newList)
 }
 
 export const loadLocalStorage = function ({commit}) {

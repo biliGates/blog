@@ -36,11 +36,3 @@ export const needPrevSong = state => state.needPrevSong
 export const favoriteSongList = state => state.favoriteSongList
 
 export const volume = state => state.volume
-
-export const favoriteSong = state => {
-  state.favoriteSongList.forEach((favoriteSong) => {
-    if (favoriteSong.song_id === state.songList[state.playingSongIndex + 1]) {
-      return true
-    }
-  })
-}

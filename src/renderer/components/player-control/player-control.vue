@@ -357,7 +357,6 @@
       radioStationSong () {
         if (this.radioStationMode) {
           this._getSong(this.radioStationSong)
-          this._getLrc(this.radioStationSong)
           !this.playing && this.PLAYING()
         }
       },

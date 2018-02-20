@@ -1,5 +1,7 @@
 <style lang="stylus" scoped>
   .top
+    width 100%
+    height 100%
     margin-right 20px
     .top-list
       .top-item
@@ -102,8 +104,8 @@
 </style>
 
 <template>
-  <scroll ref="scroll">
-    <div class="top">
+  <div class="top">
+    <scroll ref="scroll">
       <!-- 主页显示的排行榜和歌曲 -->
       <div class="top-type" v-if="!showMore && tops.length">
         <ul class="top-list">
@@ -153,9 +155,9 @@
         </div>
         <close-button @close="_showMoreList"></close-button>
       </div>
-    </div>  
-    <loading slot="loading" v-show="!tops.length"></loading>
-  </scroll>
+      <loading slot="loading" v-show="!tops.length"></loading>
+    </scroll>
+  </div>  
 </template>
 
 <script>
@@ -181,10 +183,6 @@
         getSong().then((res) => {
         })
       })
-    },
-    // 更新时刷新scroll组件
-    updated () {
-      this.$refs.scroll.refresh()
     },
     methods: {
       play (song) {

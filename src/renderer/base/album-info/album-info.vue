@@ -29,15 +29,6 @@
                 color #777
                 font-size 20px
                 display inline
-              .price
-                vertical-align top
-                display inline-block
-                margin 1px 6px 0 0
-                background rgb(220, 45, 45)
-                color #f1f1f1
-                padding 2px 3px
-                font-size 14px
-                font-weight 600
             .author, .publish-time, .listen-num, .publish-company, .language
               height 26px
               span
@@ -80,7 +71,6 @@
             <div class="album-info">
 
               <div class="title">
-                <span class="price" v-if="">付费</span>
                 <h2 class="album-name">{{album.albumInfo.title}}</h2>
               </div>
 

@@ -6,8 +6,8 @@
       width 100%
       height 100%
       .singer
-        margin-right 20px
         .filter
+          margin-right 20px
           border-bottom 1px solid rgba(7, 17, 27, 0.1)
           .filter-type
             margin-bottom 20px
@@ -46,8 +46,8 @@
                 margin-bottom 10px
                 div
                   width 30px
-          .singers-list
-            margin-top 30px  
+        .singers-list
+          margin 30px 20px 0 0
     .singer-info
       width 100%
       height 100%

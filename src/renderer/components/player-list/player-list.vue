@@ -88,34 +88,41 @@
           background rgba(7, 17, 27, 0.1)
           .song
             .playing-icon
+              width 50px
+              display flex
               .icon-pause-
                 display none
                 opacity 0
-              .icon-close-
+              .icon-close-, .icon-star
+                flex 0 0 20px
+                text-align center
                 display block
                 opacity 1
-                &:hover 
-                  transform scale(1.5)
+                &:hover
+                  &:before
+                    font-size 14px
         .song
           display flex
           width 100%
           .playing-icon
+            transition width .4s
             width 30px
-            .icon-pause-, .icon-close-
-              transition all .4s
-            .icon-pause-
-              opacity 1
+            .icon-pause-, .icon-close-, .icon-star
               &:before
+                transition all .3s
                 color #999
                 margin-left 10px
                 line-height 31px
-            .icon-close-
+            .icon-star
+              &.star
+                &:before
+                  color #f14545
+            .icon-close-, .icon-star
               display none
               opacity 0
               &:before
                 line-height 30px
                 font-size 10px
-                color #f14545
                 margin-left 11px
           .song-name, .author
             overflow hidden
@@ -189,6 +196,10 @@
             >
                 <div class="song">
                   <div class="playing-icon">
+                    <i class="icon-star" 
+                       :class="{'star': favorited(song)}" 
+                       @click.stop="favoriteSong(song)"
+                    ></i>
                     <i class="icon-close-" @click.stop="_delectSong(song.song_id)"></i>
                     <i :class="{'icon-pause-' : playingIcon === song.song_id && playing}"></i>
                   </div>
@@ -211,6 +222,7 @@
   import {mapGetters, mapActions, mapMutations} from 'vuex'
   import {icons} from '@/common/js/utils'
   import {SONG_LIST_TYPE} from '@/common/js/vuex.config'
+  import favorite from '@/common/js/favorite'
 
   export default {
     updated () {
@@ -227,6 +239,9 @@
         let list = this.songListType === SONG_LIST_TYPE.current ? this.songList : this.historySongList
         this.setFavoriteSongList(list)
       },
+      favoriteSong (song) {
+        this.setFavoriteSongList(song)
+      },
       showSongList () {
         this.songListType !== SONG_LIST_TYPE.current &&
           this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.current)
@@ -236,6 +251,9 @@
         this.songListType !== SONG_LIST_TYPE.history &&
           this.SET_SONG_LIST_TYPE(SONG_LIST_TYPE.history)
         this.$refs.scroll.topTo(0)
+      },
+      favorited (song) {
+        return favorite(this.favoriteSongList, song)
       },
       _delectAllSongs () {
         this.delectAllSongs()
@@ -262,7 +280,8 @@
         'playingSongId',
         'historySongList',
         'songListType',
-        'playing'
+        'playing',
+        'favoriteSongList'
       ]),
       playingIcon () {
         return this.playingSongId

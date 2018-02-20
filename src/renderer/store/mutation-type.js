@@ -26,6 +26,8 @@ export const TOGGLE_SONG_LIST = 'TOGGLE_SONG_LIST'
 
 export const DELECT_SONG = 'DELECT_SONG'
 
+export const DELECT_FAVORITE_SONG = 'DELECT_FAVORITE_SONG'
+
 export const CLEAR_SONG_LIST = 'CLEAR_SONG_LIST'
 
 export const PLAYING = 'PLAYING'

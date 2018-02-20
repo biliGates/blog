@@ -43,6 +43,9 @@ const mutations = {
   [types.SET_FAVORITE_SONG_LIST] (state, list) {
     state.favoriteSongList = list
   },
+  [types.DELECT_FAVORITE_SONG] (state, list) {
+    state.favoriteSongList = list
+  },
   [types.SET_VOLUME] (state, vol) {
     state.volume = vol
   }

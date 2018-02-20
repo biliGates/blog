@@ -111,6 +111,8 @@
             &.icon-star
               &:hover
                 color rgb(220, 45, 45)
+              &.star
+                color #f14545
             &.icon-pause-, &.icon-play
               font-size 18px
               &:hover
@@ -160,9 +162,7 @@ em
         <div class="wrapper">
           <i :class="playIconCls === song.song_id && playing ? 'icon-pause-' : 'icon-play'"
           ></i>
-          <slot name="icon">
-            <i v-show="needTabBar" class="icon-star" @click="favorite(song, index)"></i>
-          </slot>
+            <i :class="{'star': favorited(song)}" class="icon-star" @click.stop="favorite(song)"></i>
         </div>
       </div>
     </div>  
@@ -171,6 +171,7 @@ em
 </template>
 
 <script>
+  import favorite from '@/common/js/favorite'
   import {toTwo, icons} from '@/common/js/utils'
   import {mapActions, mapMutations, mapGetters} from 'vuex'
 
@@ -187,7 +188,11 @@ em
         require: true
       },
       getSong: {
-        typs: Function,
+        type: Function,
+        default: null
+      },
+      delectFn: {
+        type: Function,
         default: null
       },
       needTabBar: {
@@ -228,7 +233,11 @@ em
         }
         this.PLAYING(true)
       },
-      favorite (song, index) {
+      favorited (song) {
+        return favorite(this.favoriteSongList, song)
+      },
+      favorite (song) {
+        this.setFavoriteSongList(song)
       },
       _icons (text) {
         return icons(text)
@@ -238,7 +247,8 @@ em
       },
       ...mapActions({
         playingSong: 'playingSong',
-        setSongList: 'songList'
+        setSongList: 'songList',
+        setFavoriteSongList: 'setFavoriteSongList'
       }),
       ...mapMutations([
         'PLAYING',
@@ -249,6 +259,7 @@ em
       ...mapGetters([
         'playingSongId',
         'radioStationMode',
+        'favoriteSongList',
         'playing'
       ]),
       playIconCls () {

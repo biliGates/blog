@@ -97,6 +97,9 @@
           font-size 0
           padding 0 70px
           box-sizing border-box
+          .favorite
+            .star
+              color #f14545
           .favorite, .share
             display inline-block
             box-sizing border-box
@@ -187,8 +190,8 @@
           </div>
           <!-- 操作按钮 -->
           <div class="control">
-            <div class="favorite" :class="{'favorited' : favoriteSong}" @click="favorite">
-              <i class="icon-star"></i>
+            <div class="favorite" @click="favorite">
+              <i class="icon-star" :class="{'star' : favorited}"></i>
               收藏
             </div>
             <div class="share">
@@ -249,6 +252,7 @@
   import lrc from '@/common/js/lrc'
   import {getLrc} from '@/api/song'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
+  import favorite from '@/common/js/favorite'
 
   export default {
     data () {
@@ -315,6 +319,7 @@
       _getLrc (data) {
         getLrc(data.song_id).then((res) => {
           this.lrc = res.lrcContent ? lrc(res.lrcContent) : null
+          this.$refs.scroll && this.$refs.scroll.topTo(0)
         })
       },
       _albumRotate (flag) {
@@ -338,8 +343,11 @@
       ...mapGetters([
         'showPlayer',
         'playing',
-        'favoriteSong'
-      ])
+        'favoriteSongList'
+      ]),
+      favorited () {
+        return favorite(this.favoriteSongList, this.songInfo)
+      }
     },
     watch: {
       playing () {
