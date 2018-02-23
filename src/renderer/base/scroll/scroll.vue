@@ -44,7 +44,6 @@
 </template>
 
 <script>
-  const DOWN = 150 // 移动方向
   const STEP = 100 // 滚轮一格移动距离 单位PX
 
   export default {
@@ -142,7 +141,7 @@
           return
         }
         this.top = _top <= 1 && _top >= 0
-          ? (e.wheelDelta !== DOWN ? _top += step : _top -= step)
+          ? (e.wheelDelta < 0 ? _top += step : _top -= step)
           : (_top > 1 ? 1 : 0)
         this.scrollEnd()
       },

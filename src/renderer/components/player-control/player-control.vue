@@ -200,8 +200,6 @@
         this.setVolume()
       })
     },
-    mounted () {
-    },
     methods: {
       // 向子组件传递当前时间
       timeUpdate (time) {
@@ -230,17 +228,19 @@
       },
       canplay () {
         this.canPlay = true
-        this.playing && this.togglePlay()
+        if (this.playMode === PLAY_MODE.loop) {
+          this.playing && this.$refs.audio.play()
+        } else {
+          this.playing && this.togglePlay()
+        }
       },
       ended () {
-        this.PLAYING(false)
         if (this.radioStationMode) {
           this.radioSongEnd(this.songInfo)
-        } else {
+        } else if (this.playMode !== PLAY_MODE.loop) {
           this.historySongList(this.playingSong)
           this.next()
         }
-        this.PLAYING(true)
       },
       // 调整音量
       setVolume () {

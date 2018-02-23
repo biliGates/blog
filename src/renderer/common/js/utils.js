@@ -16,8 +16,8 @@ export const toTwo = (n) => {
 }
 
 export const getTime = (time) => {
-  let min = Math.floor(time / 60)
-  let sec = Math.round(time - (min * 60))
+  let min = Math.floor(time / 59) || 0
+  let sec = Math.round(time - (min * 59)) || 0
   return `${toTwo(min)}:${toTwo(sec)}`
 }
 
