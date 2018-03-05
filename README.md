@@ -1,20 +1,20 @@
 # bili music
 
 
-## 软件介绍
+### 软件介绍
 bili music 是一个使用electron-vue模版开发的桌面端音乐程序，支持windows, mac, linux等平台。
 
-## 使用技术
+### 使用技术
 electron, es6, vue全家桶, webpack, jsonp, stylus
 
 ***
 
-## 下载地址
+### 下载地址
 https://pan.baidu.com/s/1qZ54P8g
 
 ***
 
-## 界面预览图
+### 界面预览图
 ![fm](./static/fm.png)
 
 ![singers](./static/singers.png)
