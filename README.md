@@ -12,7 +12,7 @@ electron, es6, vue全家桶, webpack, jsonp, stylus
 ***
 
 ### 下载地址
-https://pan.baidu.com/s/1qZ54P8g
+https://pan.baidu.com/s/1NYn7Fhw-D71ZLSnovv-9tg
 
 ***
 
