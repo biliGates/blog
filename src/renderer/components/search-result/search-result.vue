@@ -67,18 +67,6 @@
           <p class="tips">搜索<span class="query"> "{{$route.params.keyword}}" </span>的结果是:</p>
         </div>
 
-        <div class="singer-or-album" v-if="singer || album">
-          <div class="text">最佳匹配</div>
-          <div class="info" v-if="singer">
-            <img class="img" :src="singer.avatar.big || singer.avatar.small" alt="">
-            <h2 class="name">歌手：{{singer.name}}</h2>
-          </div>
-          <div class="info" v-if="album">
-            <img class="img" :src="album.pic_big || album.pic_s500" alt="">
-            <h2 class="name">专辑：{{album.title}}</h2>
-          </div>
-        </div>
-
         <div v-if="songList">
           <song-list :getSong="getSong" @onClick="showPlayer" :songList="songList"></song-list>
         </div>
@@ -101,10 +89,7 @@
   export default {
     data () {
       return {
-        singer: null,
-        album: null,
         songList: null,
-        searchHistory: [],
         getSong: function (songId, fn) {
           return getSong(songId).then((res) => {
             if (res.error_code === ERR_OK) {
@@ -131,8 +116,6 @@
       _search () {
         let keyword = this.$route.params.keyword
         search(keyword).then((res) => {
-          this.singer = res.artist
-          this.album = res.album
           this.songList = res.song_list
         })
       },
