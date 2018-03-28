@@ -11,11 +11,6 @@ electron, es6, vue全家桶, webpack, jsonp, stylus
 
 ***
 
-### 下载地址
-https://pan.baidu.com/s/1NYn7Fhw-D71ZLSnovv-9tg
-
-***
-
 ### 界面预览图
 ![fm](./static/fm.png)
 
